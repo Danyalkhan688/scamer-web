@@ -378,56 +378,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="dashboard-cases-tbody">
-                                        <tr onclick="openCaseDetail('TG-PK-20491')" style="cursor:pointer;">
-                                            <td><strong class="text-cyan font-mono">TG-PK-20491</strong></td>
-                                            <td><span class="badge badge-purple">Payment Fraud</span></td>
-                                            <td><span class="font-mono">+92 300 1112233</span></td>
-                                            <td><span class="threat-badge high">HIGH RISK</span></td>
-                                            <td><span class="badge badge-p0">P1 — URGENT</span></td>
-                                            <td><span class="font-mono text-cyan">94%</span></td>
-                                            <td><span class="badge badge-outline">OPEN</span></td>
-                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-20491')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
-                                        </tr>
-                                        <tr onclick="openCaseDetail('TG-PK-18342')" style="cursor:pointer;">
-                                            <td><strong class="text-cyan font-mono">TG-PK-18342</strong></td>
-                                            <td><span class="badge badge-purple">Marketplace Fraud</span></td>
-                                            <td><span class="font-mono">+92 300 5556677</span></td>
-                                            <td><span class="threat-badge suspicious">SUSPICIOUS</span></td>
-                                            <td><span class="badge badge-p0">P2 — INVESTIGATE</span></td>
-                                            <td><span class="font-mono text-cyan">76%</span></td>
-                                            <td><span class="badge badge-outline">OPEN</span></td>
-                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-18342')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
-                                        </tr>
-                                        <tr onclick="openCaseDetail('TG-PK-11983')" style="cursor:pointer;">
-                                            <td><strong class="text-cyan font-mono">TG-PK-11983</strong></td>
-                                            <td><span class="badge badge-purple">Unverified Inquiry</span></td>
-                                            <td><span class="font-mono">+92 300 7778899</span></td>
-                                            <td><span class="threat-badge guarded">LOW</span></td>
-                                            <td><span class="badge badge-p0">P4 — LOW</span></td>
-                                            <td><span class="font-mono text-cyan">22%</span></td>
-                                            <td><span class="badge badge-outline">CLOSED</span></td>
-                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-11983')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
-                                        </tr>
-                                        <tr onclick="openCaseDetail('TG-PK-10948')" style="cursor:pointer;">
-                                            <td><strong class="text-cyan font-mono">TG-PK-10948</strong></td>
-                                            <td><span class="badge badge-purple">Phishing</span></td>
-                                            <td><span class="font-mono">verify-bank-pk-sec.top</span></td>
-                                            <td><span class="threat-badge high">HIGH RISK</span></td>
-                                            <td><span class="badge badge-p0">P1 — URGENT</span></td>
-                                            <td><span class="font-mono text-cyan">87%</span></td>
-                                            <td><span class="badge badge-outline">UNDER REVIEW</span></td>
-                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-10948')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
-                                        </tr>
-                                        <tr onclick="openCaseDetail('TG-PK-74921')" style="cursor:pointer;">
-                                            <td><strong class="text-cyan font-mono">TG-PK-74921</strong></td>
-                                            <td><span class="badge badge-purple">Coordinated Fraud</span></td>
-                                            <td><span class="font-mono">PK09 HABB 0092...</span></td>
-                                            <td><span class="threat-badge critical">CRITICAL THREAT</span></td>
-                                            <td><span class="badge badge-p0">P0 — IMMEDIATE</span></td>
-                                            <td><span class="font-mono text-cyan">97%</span></td>
-                                            <td><span class="badge badge-outline">ESCALATED</span></td>
-                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-74921')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
-                                        </tr>
+                                        <!-- Dynamically populated via renderDashboardCaseQueue() in script.js -->
                                     </tbody>
                                 </table>
                             </div>

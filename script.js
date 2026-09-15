@@ -1283,26 +1283,46 @@ function renderDashboard() {
         `).join('');
     }
 
-    // Render Cases Table
-    const tbody = document.getElementById('dashboard-cases-tbody');
-    if (tbody) {
-        tbody.innerHTML = sys.demoCases.map(c => `
-            <tr onclick="openCaseDetail('${c.id}')" style="cursor:pointer;">
-                <td><strong class="text-cyan font-mono">${c.id}</strong></td>
-                <td><span class="badge badge-purple">${c.threatType}</span></td>
-                <td><span class="font-mono">${c.targetIdentifier}</span></td>
-                <td><span class="threat-badge ${getThreatBadgeClass(c.threatLevel)}">${c.threatLevel}</span></td>
-                <td><span class="badge badge-p0">${c.priority}</span></td>
-                <td><span class="font-mono text-cyan">${c.patternMatch}</span></td>
-                <td><span class="badge badge-outline">${c.status}</span></td>
-                <td>
-                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('${c.id}')">
-                        <i class="fa-solid fa-folder-open"></i> Inspect
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+    // Render Priority Case Queue Table
+    renderDashboardCaseQueue();
+}
+
+function renderDashboardCaseQueue() {
+    const sys = countrySystems[state.currentCountry];
+    if (!sys) return;
+
+    const tbody = document.getElementById('dashboard-cases-tbody') || 
+                  (document.getElementById('dashboard-cases-table') ? document.getElementById('dashboard-cases-table').querySelector('tbody') : null);
+    
+    const countryLabel = document.getElementById('cases-table-country-label');
+    if (countryLabel) {
+        const cName = sys.countryName || sys.name || state.currentCountry;
+        countryLabel.textContent = `Showing synthetic records for ${cName}`;
     }
+
+    if (!tbody) return;
+
+    if (!sys.demoCases || sys.demoCases.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 2rem;">No priority cases registered for this jurisdiction.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = sys.demoCases.map(c => `
+        <tr onclick="openCaseDetail('${c.id}')" style="cursor:pointer;">
+            <td><strong class="text-cyan font-mono">${c.id}</strong></td>
+            <td><span class="badge badge-purple">${c.threatType}</span></td>
+            <td><span class="font-mono">${c.targetIdentifier}</span></td>
+            <td><span class="threat-badge ${getThreatBadgeClass(c.threatLevel || '')}">${c.threatLevel}</span></td>
+            <td><span class="badge badge-p0">${c.priority}</span></td>
+            <td><span class="font-mono text-cyan">${c.patternMatch}</span></td>
+            <td><span class="badge badge-outline">${c.status}</span></td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('${c.id}')">
+                    <i class="fa-solid fa-folder-open"></i> Inspect
+                </button>
+            </td>
+        </tr>
+    `).join('');
 }
 
 function getThreatBadgeClass(level) {
