@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRUSTGUARD AI — Fraud, Scam & Threat Intelligence Platform</title>
+    <meta name="description" content="AI-Powered Fraud, Scam & Threat Investigation Platform (Demo Environment with Synthetic Data)">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+    <div id="app" class="app-layout">
+
+        <!-- GLOBAL HEADER -->
+        <header class="app-header">
+            <div class="header-left">
+                <button id="mobile-sidebar-toggle" class="icon-btn mobile-only" aria-label="Toggle Navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div class="brand-logo" id="brand-logo-btn">
+                    <div class="logo-icon-wrapper">
+                        <i class="fa-solid fa-shield-halved logo-icon"></i>
+                        <span class="logo-pulse"></span>
+                    </div>
+                    <div class="logo-text-group">
+                        <span class="brand-name">TRUSTGUARD<span class="highlight">.AI</span></span>
+                        <span class="brand-sub">THREAT INTELLIGENCE PLATFORM</span>
+                    </div>
+                </div>
+
+                <!-- Environment Badge -->
+                <div class="demo-badge-container">
+                    <span class="demo-badge">
+                        <i class="fa-solid fa-flask demo-icon"></i>
+                        <span class="demo-badge-text">DEMO ENVIRONMENT &mdash; SYNTHETIC DATA</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Global Search & Controls -->
+            <div class="header-center">
+                <div class="global-search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="global-search-input" class="global-search-input" placeholder="Search phone, identity ID, account, email, case ID...">
+                    <button id="global-search-btn" class="search-action-btn">
+                        <span class="btn-text">ANALYZE</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <!-- Quick Search Dropdown -->
+                    <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <!-- Country Selector Dropdown -->
+                <div class="country-selector-wrapper">
+                    <label for="country-select-btn" class="visually-hidden">Select Country System</label>
+                    <div class="country-select-custom" id="country-select-btn">
+                        <span class="selected-flag" id="header-selected-flag">🇵🇰</span>
+                        <span class="selected-name" id="header-selected-name">Pakistan</span>
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </div>
+                    <ul class="country-dropdown-menu hidden" id="country-dropdown-menu">
+                        <li data-country="pakistan" class="country-option active">
+                            <span class="flag">🇵🇰</span>
+                            <span class="c-name">Pakistan</span>
+                            <span class="c-code">PKR / CNIC</span>
+                        </li>
+                        <li data-country="uk" class="country-option">
+                            <span class="flag">🇬🇧</span>
+                            <span class="c-name">United Kingdom</span>
+                            <span class="c-code">GBP / NI</span>
+                        </li>
+                        <li data-country="usa" class="country-option">
+                            <span class="flag">🇺🇸</span>
+                            <span class="c-name">United States</span>
+                            <span class="c-code">USD / SSN</span>
+                        </li>
+                        <li data-country="uae" class="country-option">
+                            <span class="flag">🇦🇪</span>
+                            <span class="c-name">United Arab Emirates</span>
+                            <span class="c-code">AED / EID</span>
+                        </li>
+                        <li data-country="canada" class="country-option">
+                            <span class="flag">🇨🇦</span>
+                            <span class="c-name">Canada</span>
+                            <span class="c-code">CAD / SIN</span>
+                        </li>
+                        <li data-country="australia" class="country-option">
+                            <span class="flag">🇦🇺</span>
+                            <span class="c-name">Australia</span>
+                            <span class="c-code">AUD / TFN</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Notifications Center Trigger -->
+                <button id="notification-trigger" class="icon-btn header-action-btn" aria-label="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-badge" id="notification-count">3</span>
+                </button>
+
+                <!-- User Profile / Demo Login -->
+                <div class="user-profile-widget" id="user-profile-trigger">
+                    <div class="avatar-ring">
+                        <img id="user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Investigator" alt="Investigator Avatar" class="user-avatar-img">
+                    </div>
+                    <div class="user-info desktop-only">
+                        <span class="user-name" id="user-display-name">Cmdr. Vance</span>
+                        <span class="user-role" id="user-display-role">Lead Threat Analyst</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down user-chevron"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- NOTIFICATION DRAWER -->
+        <aside id="notification-drawer" class="notification-drawer hidden">
+            <div class="drawer-header">
+                <div class="drawer-title">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h3>Synthetic Threat Alerts</h3>
+                </div>
+                <div class="drawer-actions">
+                    <button id="mark-all-read-btn" class="text-btn">Mark all read</button>
+                    <button id="close-notifications-btn" class="icon-btn-small" aria-label="Close Notifications"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="drawer-content" id="notification-list-container">
+                <!-- Notifications injected dynamically -->
+            </div>
+        </aside>
+
+        <!-- MOBILE SIDEBAR OVERLAY -->
+        <div id="sidebar-overlay" class="sidebar-overlay hidden" aria-hidden="true"></div>
+
+        <!-- MAIN LAYOUT WRAPPER -->
+        <div class="main-body-container">
+
+            <!-- NAVIGATION SIDEBAR -->
+            <aside id="app-sidebar" class="app-sidebar">
+                <div class="sidebar-inner">
+                    
+                    <div class="sidebar-section-label">MAIN COMMAND</div>
+                    <nav class="sidebar-nav">
+                        <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                            <i class="fa-solid fa-chart-pie nav-icon"></i>
+                            <span class="nav-label">Dashboard</span>
+                        </a>
+                        <a href="#cases" class="nav-item" data-view="cases">
+                            <i class="fa-solid fa-folder-open nav-icon"></i>
+                            <span class="nav-label">Active Investigations</span>
+                            <span class="nav-badge" id="sidebar-cases-badge">5</span>
+                        </a>
+                    </nav>
+
+                    <div class="sidebar-section-label">ANALYSIS & SCANNING</div>
+                    <nav class="sidebar-nav">
+                        <a href="#scanner" class="nav-item" data-view="scanner">
+                            <i class="fa-solid fa-radar nav-icon"></i>
+                            <span class="nav-label">Scam Checker</span>
+                        </a>
+                        <a href="#message-analyzer" class="nav-item" data-view="message-analyzer">
+                            <i class="fa-solid fa-comment-slash nav-icon"></i>
+                            <span class="nav-label">Message Analyzer</span>
+                        </a>
+                        <a href="#url-analyzer" class="nav-item" data-view="url-analyzer">
+                            <i class="fa-solid fa-globe nav-icon"></i>
+                            <span class="nav-label">URL Intelligence</span>
+                        </a>
+                    </nav>
+
+                    <div class="sidebar-section-label">ACTION & REPORTING</div>
+                    <nav class="sidebar-nav">
+                        <a href="#report" class="nav-item" data-view="report">
+                            <i class="fa-solid fa-bullhorn nav-icon"></i>
+                            <span class="nav-label">Report a Scam</span>
+                        </a>
+                        <a href="#settings" class="nav-item" data-view="settings">
+                            <i class="fa-solid fa-sliders nav-icon"></i>
+                            <span class="nav-label">Settings & Controls</span>
+                        </a>
+                        <a href="#about" class="nav-item" data-view="about">
+                            <i class="fa-solid fa-circle-info nav-icon"></i>
+                            <span class="nav-label">About & Transparency</span>
+                        </a>
+                    </nav>
+
+                    <div class="sidebar-footer">
+                        <div class="country-status-card">
+                            <div class="csc-header">
+                                <span id="sidebar-country-flag" class="csc-flag">🇵🇰</span>
+                                <div class="csc-text">
+                                    <span id="sidebar-country-name" class="csc-name">Pakistan System</span>
+                                    <span id="sidebar-authority-name" class="csc-auth">Cyber Crime Division</span>
+                                </div>
+                            </div>
+                            <div class="csc-footer">
+                                <span class="csc-tag"><i class="fa-solid fa-shield"></i> SYNTHETIC MODE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT VIEWS AREA -->
+            <main id="main-content" class="main-content">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <section id="view-dashboard" class="content-view active">
+                    <!-- Top Threat Banner -->
+                    <div class="dashboard-header-banner">
+                        <div class="dhb-text">
+                            <div class="dhb-title-group">
+                                <h2>THREAT COMMAND CENTER</h2>
+                                <span class="dhb-country-pill" id="dashboard-country-pill">
+                                    <span id="dhb-flag">🇵🇰</span> <span id="dhb-country">Pakistan Regional Sector</span>
+                                </span>
+                            </div>
+                            <p class="dhb-subtitle">Multi-vector synthetic threat monitoring and automated fingerprint detection.</p>
+                        </div>
+                        <div class="dhb-actions">
+                            <button class="btn btn-secondary" id="refresh-dashboard-btn">
+                                <i class="fa-solid fa-rotate"></i> Refresh Telemetry
+                            </button>
+                            <button class="btn btn-primary" id="new-investigation-btn">
+                                <i class="fa-solid fa-plus"></i> Launch Investigation
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Statistics Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card critical">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-skull-crossbones"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Critical Threat Score</span>
+                                <span class="stat-value" id="stat-threat-level">CRITICAL</span>
+                                <span class="stat-sub text-danger"><i class="fa-solid fa-arrow-up"></i> P0 Priority Active</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap cyan">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Active Regional Cases</span>
+                                <span class="stat-value" id="stat-active-cases">5 Cases</span>
+                                <span class="stat-sub text-muted" id="stat-cases-sub">2 Under Escalation</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap orange">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Flagged Entities</span>
+                                <span class="stat-value" id="stat-suspicious-entities">24 Entities</span>
+                                <span class="stat-sub text-warning" id="stat-entities-sub">14 Accounts, 10 Phones</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap green">
+                                <i class="fa-solid fa-file-shield"></i>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-label">Synthetic Reports Today</span>
+                                <span class="stat-value" id="stat-reports-today">18 Reports</span>
+                                <span class="stat-sub text-success"><i class="fa-solid fa-check"></i> Demo Queue Operational</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid Layout: Radar + Fingerprints + Table -->
+                    <div class="dashboard-grid">
+                        <!-- Left Panel: Threat Radar & Assessment -->
+                        <div class="glass-card grid-col-6">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-circle-nodes text-cyan"></i>
+                                    <h3>Multi-Dimensional Threat Radar</h3>
+                                </div>
+                                <span class="badge badge-outline" id="radar-case-id">CASE: TG-PK-20491</span>
+                            </div>
+                            <div class="card-body radar-wrapper">
+                                <div class="radar-container">
+                                    <svg id="dashboard-radar-svg" viewBox="0 0 300 300" class="radar-svg">
+                                        <!-- Rendered via JS -->
+                                    </svg>
+                                </div>
+                                <div class="radar-metrics-list" id="radar-metrics-legend">
+                                    <!-- Dynamic metrics breakdown -->
+                                </div>
+                            </div>
+                            <div class="card-footer radar-score-footer">
+                                <div class="multidim-scores">
+                                    <div class="score-pill">
+                                        <span class="sp-label">AI Confidence</span>
+                                        <span class="sp-val text-cyan" id="dashboard-confidence">96%</span>
+                                    </div>
+                                    <div class="score-pill">
+                                        <span class="sp-label">Evidence Strength</span>
+                                        <span class="sp-val text-success" id="dashboard-evidence-strength">STRONG</span>
+                                    </div>
+                                    <div class="score-pill">
+                                        <span class="sp-label">Pattern Match</span>
+                                        <span class="sp-val text-warning" id="dashboard-pattern-match">89%</span>
+                                    </div>
+                                    <div class="score-pill">
+                                        <span class="sp-label">Anomaly Level</span>
+                                        <span class="sp-val text-danger" id="dashboard-anomaly-level">SEVERE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Fraud Fingerprint Patterns -->
+                        <div class="glass-card grid-col-6">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-fingerprint text-purple"></i>
+                                    <h3>Detected Fraud Fingerprints</h3>
+                                </div>
+                                <span class="badge badge-purple">AUTOMATED MATCH</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="fingerprints-list" id="dashboard-fingerprints-container">
+                                    <!-- Injected via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Panel: High Risk Cases Table -->
+                        <div class="glass-card grid-col-12">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-list-check text-warning"></i>
+                                    <h3>Regional Priority Case Queue</h3>
+                                </div>
+                                <span class="text-muted text-small" id="cases-table-country-label">Showing synthetic records for Pakistan</span>
+                            </div>
+                            <div class="card-body no-padding overflow-x">
+                                <table class="data-table" id="dashboard-cases-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case ID</th>
+                                            <th>Threat Type</th>
+                                            <th>Target Identifier</th>
+                                            <th>Threat Level</th>
+                                            <th>Priority</th>
+                                            <th>Match %</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard-cases-tbody">
+                                        <!-- Cases rows injected via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. CASE INVESTIGATION DETAIL VIEW -->
+                <section id="view-cases" class="content-view">
+                    <div class="case-detail-header glass-card">
+                        <div class="cdh-left">
+                            <button id="back-to-dashboard-btn" class="icon-btn-text">
+                                <i class="fa-solid fa-arrow-left"></i> Back
+                            </button>
+                            <div class="cdh-title-block">
+                                <div class="cdh-id-row">
+                                    <h2 id="case-detail-id">TG-PK-20491</h2>
+                                    <span id="case-detail-threat-badge" class="threat-badge critical">🔴 CRITICAL THREAT</span>
+                                    <span id="case-detail-priority-badge" class="badge badge-p0">P0 — IMMEDIATE</span>
+                                    <span id="case-detail-status-badge" class="badge badge-outline">OPEN</span>
+                                </div>
+                                <div class="cdh-meta-row">
+                                    <span class="meta-item"><i class="fa-solid fa-earth-asia"></i> Sector: <strong id="case-detail-country">Pakistan</strong></span>
+                                    <span class="meta-item"><i class="fa-solid fa-clock"></i> Opened: <strong id="case-detail-created">Today 08:42 AM</strong></span>
+                                    <span class="meta-item"><i class="fa-solid fa-masks-theater"></i> Likely Threat: <strong id="case-detail-threat-type">ACCOUNT TAKEOVER</strong></span>
+                                    <span class="meta-item"><i class="fa-solid fa-microchip"></i> Confidence: <strong id="case-detail-confidence" class="text-cyan">94%</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cdh-right">
+                            <div class="case-selector-dropdown">
+                                <label for="case-switcher-select" class="visually-hidden">Switch Synthetic Case</label>
+                                <select id="case-switcher-select" class="custom-select"></select>
+                            </div>
+                            <button class="btn btn-secondary" id="export-case-btn">
+                                <i class="fa-solid fa-file-pdf"></i> Export Brief
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Case Investigation Tabs Navigation -->
+                    <div class="case-tabs-bar">
+                        <button class="case-tab-btn active" data-tab="tab-overview">
+                            <i class="fa-solid fa-circle-info"></i> Overview & Radar
+                        </button>
+                        <button class="case-tab-btn" data-tab="tab-why-flagged">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Why Was This Flagged?
+                        </button>
+                        <button class="case-tab-btn" data-tab="tab-graph">
+                            <i class="fa-solid fa-diagram-project"></i> Entity Relationship Graph
+                        </button>
+                        <button class="case-tab-btn" data-tab="tab-timeline">
+                            <i class="fa-solid fa-timeline"></i> Activity Timeline
+                        </button>
+                        <button class="case-tab-btn" data-tab="tab-actions">
+                            <i class="fa-solid fa-clipboard-check"></i> Recommended Actions
+                        </button>
+                    </div>
+
+                    <!-- TAB CONTENT CONTAINERS -->
+                    <div class="case-tab-contents">
+                        
+                        <!-- TAB 1: OVERVIEW -->
+                        <div id="tab-overview" class="tab-pane active">
+                            <div class="dashboard-grid">
+                                <div class="glass-card grid-col-6">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <i class="fa-solid fa-shield-cat text-cyan"></i>
+                                            <h3>Synthetic Threat Assessment Breakdown</h3>
+                                        </div>
+                                    </div>
+                                    <div class="card-body radar-wrapper">
+                                        <div class="radar-container">
+                                            <svg id="case-tab-radar-svg" viewBox="0 0 300 300" class="radar-svg"></svg>
+                                        </div>
+                                        <div class="radar-metrics-list" id="case-tab-metrics-legend"></div>
+                                    </div>
+                                </div>
+
+                                <div class="glass-card grid-col-6">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            <i class="fa-solid fa-fingerprint text-purple"></i>
+                                            <h3>Active Pattern Fingerprint</h3>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="case-tab-fingerprint-display" class="fingerprint-full-card"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: WHY WAS THIS FLAGGED? -->
+                        <div id="tab-why-flagged" class="tab-pane">
+                            <div class="glass-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fa-solid fa-magnifying-glass-chart text-warning"></i>
+                                        <h3>WHY WAS THIS FLAGGED? &mdash; SYNTHETIC ANOMALY EVIDENCE</h3>
+                                    </div>
+                                    <span class="badge badge-outline">TRANSPARENT AI REASONING</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="flagged-reasons-list" id="why-flagged-list-container">
+                                        <!-- Injected via JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: INTERACTIVE RELATIONSHIP GRAPH -->
+                        <div id="tab-graph" class="tab-pane">
+                            <div class="glass-card graph-viewport-card">
+                                <div class="card-header graph-header">
+                                    <div class="card-title">
+                                        <i class="fa-solid fa-circle-nodes text-cyan"></i>
+                                        <h3>Interactive Entity Relationship Graph</h3>
+                                    </div>
+                                    <div class="graph-legend">
+                                        <span class="node-legend-item"><span class="legend-dot dot-person"></span> Person</span>
+                                        <span class="node-legend-item"><span class="legend-dot dot-phone"></span> Phone</span>
+                                        <span class="node-legend-item"><span class="legend-dot dot-account"></span> Account</span>
+                                        <span class="node-legend-item"><span class="legend-dot dot-device"></span> Device</span>
+                                        <span class="node-legend-item"><span class="legend-dot dot-ip"></span> IP Address</span>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" id="reset-graph-view-btn">
+                                        <i class="fa-solid fa-compress"></i> Reset View
+                                    </button>
+                                </div>
+                                <div class="card-body graph-canvas-wrapper" id="graph-container">
+                                    <svg id="entity-relationship-svg" class="graph-svg" width="100%" height="500"></svg>
+                                    
+                                    <!-- Node Inspector Side Drawer -->
+                                    <div id="graph-node-inspector" class="node-inspector hidden">
+                                        <div class="inspector-header">
+                                            <span class="inspector-title" id="inspector-node-title">Person Node</span>
+                                            <button id="close-inspector-btn" class="icon-btn-small" aria-label="Close Inspector"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                        <div class="inspector-body" id="inspector-node-details">
+                                            <!-- Injected via JS -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: ACTIVITY TIMELINE -->
+                        <div id="tab-timeline" class="tab-pane">
+                            <div class="glass-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fa-solid fa-timeline text-cyan"></i>
+                                        <h3>Case Activity & Anomaly Sequence Timeline</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="timeline-container" id="case-timeline-container">
+                                        <!-- Injected via JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 5: RECOMMENDED ACTIONS -->
+                        <div id="tab-actions" class="tab-pane">
+                            <div class="glass-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="fa-solid fa-list-check text-success"></i>
+                                        <h3>RECOMMENDED INVESTIGATIVE ACTIONS</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="action-checklist" id="recommended-actions-list">
+                                        <!-- Injected via JS -->
+                                    </div>
+
+                                    <div class="legal-disclaimer-box margin-top-lg">
+                                        <i class="fa-solid fa-triangle-exclamation disclaimer-icon"></i>
+                                        <div class="disclaimer-text">
+                                            <strong>MANDATORY HUMAN-IN-THE-LOOP DISCLAIMER</strong>
+                                            <p>AI recommendations provided by TRUSTGUARD AI are decision-support tools built upon synthetic demo logic. Final investigation, legal actions, freezing order determinations, and official police reporting MUST be performed and validated by authorized human personnel.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- 3. PUBLIC FRAUD & SCAM CHECKER (SCANNER) -->
+                <section id="view-scanner" class="content-view">
+                    <div class="page-title-banner glass-card">
+                        <div class="ptb-content">
+                            <h2>PUBLIC SCAM CHECKER & THREAT SCANNER</h2>
+                            <p>Simulate real-time threat intelligence lookup for suspicious entities across selected country databases.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="glass-card grid-col-12">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-shield-virus text-cyan"></i>
+                                    <h3>Threat Scanner Input Terminal</h3>
+                                </div>
+                                <span class="badge badge-outline" id="scanner-country-badge">SECTOR: PAKISTAN</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="scanner-input-grid">
+                                    <div class="input-group">
+                                        <label for="scanner-input-type" class="form-label">Identifier Type</label>
+                                        <select id="scanner-input-type" class="custom-select">
+                                            <option value="phone">Mobile / Phone Number</option>
+                                            <option value="identity">Identity Card / Tax Identifier</option>
+                                            <option value="account">Bank Account / IBAN / Routing</option>
+                                            <option value="email">Email Address</option>
+                                            <option value="url">Website URL</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="input-group flex-2">
+                                        <label for="scanner-query-val" class="form-label">Value to Scan</label>
+                                        <input type="text" id="scanner-query-val" class="form-input" placeholder="e.g. +92 300 8291042">
+                                    </div>
+
+                                    <div class="input-group flex-end">
+                                        <button id="run-scanner-btn" class="btn btn-primary btn-block">
+                                            <i class="fa-solid fa-bolt"></i> ANALYZE THREAT
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Preset Demo Quick Buttons -->
+                                <div class="quick-samples-bar margin-top-md">
+                                    <span class="qs-label">Load Synthetic Sample:</span>
+                                    <div class="sample-buttons-group" id="scanner-samples-group">
+                                        <!-- Dynamic per country -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scanner Terminal Animation Window -->
+                        <div id="scanner-terminal-card" class="glass-card grid-col-12 hidden">
+                            <div class="card-header terminal-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-terminal text-green"></i>
+                                    <h3>Synthetic Threat Analysis Telemetry</h3>
+                                </div>
+                                <span class="terminal-status" id="terminal-status-text">INITIALIZING...</span>
+                            </div>
+                            <div class="card-body terminal-body" id="scanner-terminal-logs">
+                                <!-- Log lines appended here -->
+                            </div>
+                        </div>
+
+                        <!-- Scan Results Container -->
+                        <div id="scanner-result-card" class="glass-card grid-col-12 hidden">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. MESSAGE ANALYZER -->
+                <section id="view-message-analyzer" class="content-view">
+                    <div class="page-title-banner glass-card">
+                        <div class="ptb-content">
+                            <h2>SUSPICIOUS MESSAGE & SOCIAL ENGINEERING ANALYZER</h2>
+                            <p>Detect phishing phrasing, fake urgent threats, link harvesting, and bank impersonation indicators.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="glass-card grid-col-6">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-paste text-purple"></i>
+                                    <h3>Paste Suspicious SMS / Email / Chat Text</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <label for="message-input-textarea" class="visually-hidden">Paste Suspicious Message Text</label>
+                                <textarea id="message-input-textarea" class="form-textarea" rows="8" placeholder="Paste suspicious message here... e.g. 'URGENT: Your account will be blocked within 24 hours. Click http://verify-bank.com to resolve now.'"></textarea>
+
+                                <div class="quick-samples-bar margin-top-md">
+                                    <span class="qs-label">Try Synthetic Samples:</span>
+                                    <div class="sample-buttons-group">
+                                        <button class="btn-sample" data-sample="msg-bank">Bank Blocked Scam</button>
+                                        <button class="btn-sample" data-sample="msg-lottery">Prize / Lottery Fraud</button>
+                                        <button class="btn-sample" data-sample="msg-tax">Tax Refund Phishing</button>
+                                    </div>
+                                </div>
+
+                                <button id="analyze-msg-btn" class="btn btn-primary btn-block margin-top-md">
+                                    <i class="fa-solid fa-microscope"></i> ANALYZE SOCIAL ENGINEERING RISK
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass-card grid-col-6">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-feather-pointed text-cyan"></i>
+                                    <h3>Annotated Analysis & Detected Risk Markers</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="msg-analysis-output-container">
+                                    <div class="empty-state">
+                                        <i class="fa-solid fa-comment-dots empty-icon"></i>
+                                        <p>Paste a message on the left and click "Analyze" to inspect social engineering indicators.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. URL & DOMAIN ANALYZER -->
+                <section id="view-url-analyzer" class="content-view">
+                    <div class="page-title-banner glass-card">
+                        <div class="ptb-content">
+                            <h2>URL & DOMAIN INTELLIGENCE CHECKER</h2>
+                            <p>Analyze domain entropy, typosquatting risk, suspicious subdomains, and protocol vulnerabilities.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="glass-card grid-col-12">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-link text-cyan"></i>
+                                    <h3>Domain Structure & Reputation Analyzer</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="scanner-input-grid">
+                                    <div class="input-group flex-3">
+                                        <label for="url-input-val" class="form-label">Website URL or Domain</label>
+                                        <input type="text" id="url-input-val" class="form-input" placeholder="e.g. http://secure-banking-login-pakistan.phish-site.com/verify">
+                                    </div>
+                                    <div class="input-group flex-end">
+                                        <button id="analyze-url-btn" class="btn btn-primary btn-block">
+                                            <i class="fa-solid fa-magnifying-glass-location"></i> INSPECT DOMAIN
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="quick-samples-bar margin-top-md">
+                                    <span class="qs-label">Try Demo URLs:</span>
+                                    <div class="sample-buttons-group">
+                                        <button class="btn-sample-url" data-url="http://security-update-bank-pk.top/login">http://security-update-bank-pk.top/login</button>
+                                        <button class="btn-sample-url" data-url="https://verified-gov-tax-portal.xyz/claim">https://verified-gov-tax-portal.xyz/claim</button>
+                                        <button class="btn-sample-url" data-url="https://official-statebank.gov.pk">https://official-statebank.gov.pk (Legit)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="url-result-container" class="glass-card grid-col-12 hidden">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. REPORT A SCAM -->
+                <section id="view-report" class="content-view">
+                    <div class="page-title-banner glass-card">
+                        <div class="ptb-content">
+                            <h2>REPORT A SCAM TO DEMO INVESTIGATION QUEUE</h2>
+                            <p>Submit synthetic incident details into the regional sector investigation ledger.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card max-width-800 margin-auto">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-bullhorn text-warning"></i>
+                                <h3>Synthetic Fraud Report Intake Form</h3>
+                            </div>
+                            <span class="badge badge-outline" id="report-form-country-tag">SECTOR: PAKISTAN</span>
+                        </div>
+                        <div class="card-body">
+                            <form id="scam-report-form" class="form-grid">
+                                <div class="form-group grid-col-6">
+                                    <label for="rpt-scam-type" class="form-label">Scam Category *</label>
+                                    <select id="rpt-scam-type" class="custom-select" required>
+                                        <option value="Phishing">Phishing / Credential Theft</option>
+                                        <option value="Account Takeover">Account Takeover / SIM Swap</option>
+                                        <option value="Payment Fraud">Un-authorized Financial Transfer</option>
+                                        <option value="Marketplace Scam">Fake E-Commerce / Goods Scam</option>
+                                        <option value="Investment Scam">Fake Crypto / Ponzi Scheme</option>
+                                        <option value="Impersonation">Government / Authority Impersonation</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group grid-col-6">
+                                    <label for="rpt-phone" class="form-label">Scammer Phone Number</label>
+                                    <input type="text" id="rpt-phone" class="form-input" placeholder="e.g. +92 300 1234567">
+                                </div>
+
+                                <div class="form-group grid-col-6">
+                                    <label for="rpt-email" class="form-label">Scammer Email</label>
+                                    <input type="email" id="rpt-email" class="form-input" placeholder="e.g. support@fake-bank-auth.com">
+                                </div>
+
+                                <div class="form-group grid-col-6">
+                                    <label for="rpt-account" class="form-label" id="rpt-account-label">Target Bank Account / IBAN</label>
+                                    <input type="text" id="rpt-account" class="form-input" placeholder="Bank account / IBAN reference">
+                                </div>
+
+                                <div class="form-group grid-col-12">
+                                    <label for="rpt-url" class="form-label">Suspicious Website / URL</label>
+                                    <input type="url" id="rpt-url" class="form-input" placeholder="http://phishing-site.example.com">
+                                </div>
+
+                                <div class="form-group grid-col-12">
+                                    <label for="rpt-description" class="form-label">Incident Narrative & Evidence Details *</label>
+                                    <textarea id="rpt-description" class="form-textarea" rows="4" required placeholder="Describe what occurred, financial impact, messages received..."></textarea>
+                                </div>
+
+                                <div class="form-group grid-col-12 flex-end">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fa-solid fa-paper-plane"></i> SUBMIT TO DEMO QUEUE
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div id="report-success-alert" class="success-banner hidden margin-top-md">
+                                <i class="fa-solid fa-circle-check success-icon"></i>
+                                <div class="sb-content">
+                                    <h4 id="rpt-success-id">REPORT SUBMITTED: RPT-PK-839201</h4>
+                                    <p>Report successfully recorded in the demo investigation queue for this country sector. synthetic cases created automatically if threat thresholds are exceeded.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SETTINGS & CONTROLS -->
+                <section id="view-settings" class="content-view">
+                    <div class="page-title-banner glass-card">
+                        <div class="ptb-content">
+                            <h2>PLATFORM SETTINGS & SIMULATION CONTROLS</h2>
+                            <p>Configure accessibility options, demo state reset, and system parameters.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card max-width-800 margin-auto">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-sliders text-cyan"></i>
+                                <h3>Preferences & System Options</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="settings-list">
+                                <div class="setting-item">
+                                    <div class="si-info">
+                                        <strong>Active Country Sector</strong>
+                                        <p>Controls currency, phone validation, identity terminology, and synthetic dataset loading.</p>
+                                    </div>
+                                    <div class="si-control">
+                                        <select id="settings-country-select" class="custom-select">
+                                            <option value="pakistan">🇵🇰 Pakistan (PKR)</option>
+                                            <option value="uk">🇬🇧 United Kingdom (GBP)</option>
+                                            <option value="usa">🇺🇸 United States (USD)</option>
+                                            <option value="uae">🇦🇪 United Arab Emirates (AED)</option>
+                                            <option value="canada">🇨🇦 Canada (CAD)</option>
+                                            <option value="australia">🇦🇺 Australia (AUD)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="si-info">
+                                        <strong>Reduced Motion Mode</strong>
+                                        <p>Disable pulse animations, background glows, and visual movement for accessibility.</p>
+                                    </div>
+                                    <div class="si-control">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="reduced-motion-toggle">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="si-info">
+                                        <strong>Command Center Glow Intensity</strong>
+                                        <p>Adjust visual ambient dark glass glow level.</p>
+                                    </div>
+                                    <div class="si-control">
+                                        <select id="glow-intensity-select" class="custom-select">
+                                            <option value="high">High Glow (Default)</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="low">Subtle</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="si-info">
+                                        <strong>Reset Demo Data Ledger</strong>
+                                        <p>Reset synthetic cases, alerts, and submitted reports back to original state.</p>
+                                    </div>
+                                    <div class="si-control">
+                                        <button id="reset-demo-data-btn" class="btn btn-secondary text-danger">
+                                            <i class="fa-solid fa-trash-arrow-up"></i> Reset Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. ABOUT & TRANSPARENCY -->
+                <section id="view-about" class="content-view">
+                    <div class="glass-card max-width-900 margin-auto">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-shield-halved text-cyan"></i>
+                                <h3>ABOUT TRUSTGUARD AI &amp; TRANSPARENCY DISCLAIMER</h3>
+                            </div>
+                            <span class="badge badge-cyan">DEMO PLATFORM</span>
+                        </div>
+                        <div class="card-body about-body">
+                            <div class="about-hero">
+                                <h2>TRUSTGUARD AI</h2>
+                                <p class="lead-text">Next-Generation AI-Assisted Fraud, Scam & Threat Intelligence Investigation Concept Platform</p>
+                            </div>
+
+                            <div class="about-section">
+                                <h4><i class="fa-solid fa-circle-check text-success"></i> Purpose of this Platform</h4>
+                                <p>TRUSTGUARD AI is a high-fidelity frontend demonstration of how modern cybersecurity intelligence platforms combine multi-dimensional risk scoring, relationship graphs, fraud fingerprinting, and country-specific regulatory architectures to empower threat analysts.</p>
+                            </div>
+
+                            <div class="about-section highlight-box">
+                                <h4><i class="fa-solid fa-triangle-exclamation text-warning"></i> Critical Transparency Notice</h4>
+                                <ul>
+                                    <li>This website operates strictly in a <strong>DEMO ENVIRONMENT using 100% SYNTHETIC DATA</strong>.</li>
+                                    <li>It does <strong>NOT</strong> have direct access to real government, police, bank, NADRA, FIA, FBI, UK police, telecom, or private identity databases.</li>
+                                    <li>All identity numbers (CNIC, SSN, NI, SIN, EID, TFN), phone numbers, bank accounts, and case references presented are completely fictional synthetic examples.</li>
+                                    <li>Threat assessments, AI confidence levels, and risk calculations are produced using transparent frontend synthetic rules and do not constitute legal proof of criminal activity.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- DEMO LOGIN MODAL -->
+        <div id="login-modal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <i class="fa-solid fa-user-lock text-cyan"></i>
+                        <h3>Investigator Authentication</h3>
+                    </div>
+                    <button id="close-login-modal-btn" class="icon-btn-small" aria-label="Close Login Modal"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted text-small margin-bottom-md">Demo Mode &mdash; Use provided credentials to simulate analyst access.</p>
+                    <form id="login-form">
+                        <div class="form-group margin-bottom-sm">
+                            <label for="login-email" class="form-label">Analyst Email</label>
+                            <input type="email" id="login-email" class="form-input" value="investigator@trustguard.demo" required>
+                        </div>
+                        <div class="form-group margin-bottom-md">
+                            <label for="login-password" class="form-label">Access Token / Password</label>
+                            <input type="password" id="login-password" class="form-input" value="demo123" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            <i class="fa-solid fa-key"></i> AUTHENTICATE DEMO SESSION
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Core Script -->
+    <script src="script.js"></script>
+</body>
+</html>
