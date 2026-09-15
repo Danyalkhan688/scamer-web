@@ -483,6 +483,52 @@ body.glow-low::before { opacity: 0.15; }
     background: rgba(255, 255, 255, 0.05);
 }
 
+.user-profile-wrapper {
+    position: relative;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background: var(--bg-dark-surface);
+    border: 1px solid var(--accent-cyan);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glass);
+    z-index: 200;
+    overflow: hidden;
+    padding: 6px 0;
+}
+
+.udm-header {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.udm-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 6px 0;
+}
+
+.udm-item {
+    width: 100%;
+    text-align: left;
+    padding: 9px 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+}
+
+.udm-item:hover {
+    background: rgba(0, 242, 254, 0.1);
+}
+
 .avatar-ring {
     width: 32px;
     height: 32px;

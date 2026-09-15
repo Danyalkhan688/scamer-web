@@ -111,15 +111,26 @@
                 </button>
 
                 <!-- User Profile / Demo Login -->
-                <div class="user-profile-widget" id="user-profile-trigger">
-                    <div class="avatar-ring">
-                        <img id="user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Investigator" alt="Investigator Avatar" class="user-avatar-img">
+                <div class="user-profile-wrapper">
+                    <div class="user-profile-widget" id="user-profile-trigger">
+                        <div class="avatar-ring">
+                            <img id="user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Investigator" alt="Investigator Avatar" class="user-avatar-img">
+                        </div>
+                        <div class="user-info desktop-only">
+                            <span class="user-name" id="user-display-name">Cmdr. Vance</span>
+                            <span class="user-role" id="user-display-role">Lead Analyst</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down user-chevron"></i>
                     </div>
-                    <div class="user-info desktop-only">
-                        <span class="user-name" id="user-display-name">Cmdr. Vance</span>
-                        <span class="user-role" id="user-display-role">Lead Threat Analyst</span>
+                    <div id="user-profile-menu" class="user-dropdown-menu hidden">
+                        <div class="udm-header">
+                            <strong id="udm-user-name">Cmdr. Vance</strong>
+                            <span class="text-small text-muted" id="udm-user-status">Synthetic Analyst Session</span>
+                        </div>
+                        <div class="udm-divider"></div>
+                        <button id="login-modal-open-btn" class="udm-item"><i class="fa-solid fa-key"></i> Authenticate Session</button>
+                        <button id="logout-btn" class="udm-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout Demo Session</button>
                     </div>
-                    <i class="fa-solid fa-chevron-down user-chevron"></i>
                 </div>
             </div>
         </header>
@@ -308,7 +319,7 @@
                             <div class="card-footer radar-score-footer">
                                 <div class="multidim-scores">
                                     <div class="score-pill">
-                                        <span class="sp-label">AI Confidence</span>
+                                        <span class="sp-label">Synthetic Risk Confidence</span>
                                         <span class="sp-val text-cyan" id="dashboard-confidence">96%</span>
                                     </div>
                                     <div class="score-pill">
@@ -367,7 +378,56 @@
                                         </tr>
                                     </thead>
                                     <tbody id="dashboard-cases-tbody">
-                                        <!-- Cases rows injected via JS -->
+                                        <tr onclick="openCaseDetail('TG-PK-20491')" style="cursor:pointer;">
+                                            <td><strong class="text-cyan font-mono">TG-PK-20491</strong></td>
+                                            <td><span class="badge badge-purple">Payment Fraud</span></td>
+                                            <td><span class="font-mono">+92 300 1112233</span></td>
+                                            <td><span class="threat-badge high">HIGH RISK</span></td>
+                                            <td><span class="badge badge-p0">P1 — URGENT</span></td>
+                                            <td><span class="font-mono text-cyan">94%</span></td>
+                                            <td><span class="badge badge-outline">OPEN</span></td>
+                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-20491')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
+                                        </tr>
+                                        <tr onclick="openCaseDetail('TG-PK-18342')" style="cursor:pointer;">
+                                            <td><strong class="text-cyan font-mono">TG-PK-18342</strong></td>
+                                            <td><span class="badge badge-purple">Marketplace Fraud</span></td>
+                                            <td><span class="font-mono">+92 300 5556677</span></td>
+                                            <td><span class="threat-badge suspicious">SUSPICIOUS</span></td>
+                                            <td><span class="badge badge-p0">P2 — INVESTIGATE</span></td>
+                                            <td><span class="font-mono text-cyan">76%</span></td>
+                                            <td><span class="badge badge-outline">OPEN</span></td>
+                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-18342')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
+                                        </tr>
+                                        <tr onclick="openCaseDetail('TG-PK-11983')" style="cursor:pointer;">
+                                            <td><strong class="text-cyan font-mono">TG-PK-11983</strong></td>
+                                            <td><span class="badge badge-purple">Unverified Inquiry</span></td>
+                                            <td><span class="font-mono">+92 300 7778899</span></td>
+                                            <td><span class="threat-badge guarded">LOW</span></td>
+                                            <td><span class="badge badge-p0">P4 — LOW</span></td>
+                                            <td><span class="font-mono text-cyan">22%</span></td>
+                                            <td><span class="badge badge-outline">CLOSED</span></td>
+                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-11983')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
+                                        </tr>
+                                        <tr onclick="openCaseDetail('TG-PK-10948')" style="cursor:pointer;">
+                                            <td><strong class="text-cyan font-mono">TG-PK-10948</strong></td>
+                                            <td><span class="badge badge-purple">Phishing</span></td>
+                                            <td><span class="font-mono">verify-bank-pk-sec.top</span></td>
+                                            <td><span class="threat-badge high">HIGH RISK</span></td>
+                                            <td><span class="badge badge-p0">P1 — URGENT</span></td>
+                                            <td><span class="font-mono text-cyan">87%</span></td>
+                                            <td><span class="badge badge-outline">UNDER REVIEW</span></td>
+                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-10948')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
+                                        </tr>
+                                        <tr onclick="openCaseDetail('TG-PK-74921')" style="cursor:pointer;">
+                                            <td><strong class="text-cyan font-mono">TG-PK-74921</strong></td>
+                                            <td><span class="badge badge-purple">Coordinated Fraud</span></td>
+                                            <td><span class="font-mono">PK09 HABB 0092...</span></td>
+                                            <td><span class="threat-badge critical">CRITICAL THREAT</span></td>
+                                            <td><span class="badge badge-p0">P0 — IMMEDIATE</span></td>
+                                            <td><span class="font-mono text-cyan">97%</span></td>
+                                            <td><span class="badge badge-outline">ESCALATED</span></td>
+                                            <td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('TG-PK-74921')"><i class="fa-solid fa-folder-open"></i> Inspect</button></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -393,7 +453,7 @@
                                     <span class="meta-item"><i class="fa-solid fa-earth-asia"></i> Sector: <strong id="case-detail-country">Pakistan</strong></span>
                                     <span class="meta-item"><i class="fa-solid fa-clock"></i> Opened: <strong id="case-detail-created">Today 08:42 AM</strong></span>
                                     <span class="meta-item"><i class="fa-solid fa-masks-theater"></i> Likely Threat: <strong id="case-detail-threat-type">ACCOUNT TAKEOVER</strong></span>
-                                    <span class="meta-item"><i class="fa-solid fa-microchip"></i> Confidence: <strong id="case-detail-confidence" class="text-cyan">94%</strong></span>
+                                    <span class="meta-item"><i class="fa-solid fa-microchip"></i> Risk Confidence: <strong id="case-detail-confidence" class="text-cyan">94%</strong></span>
                                 </div>
                             </div>
                         </div>
@@ -471,7 +531,7 @@
                                         <i class="fa-solid fa-magnifying-glass-chart text-warning"></i>
                                         <h3>WHY WAS THIS FLAGGED? &mdash; SYNTHETIC ANOMALY EVIDENCE</h3>
                                     </div>
-                                    <span class="badge badge-outline">TRANSPARENT AI REASONING</span>
+                                    <span class="badge badge-outline">TRANSPARENT SYNTHETIC RULE REASONING</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="flagged-reasons-list" id="why-flagged-list-container">
@@ -586,6 +646,7 @@
                                         <label for="scanner-input-type" class="form-label">Identifier Type</label>
                                         <select id="scanner-input-type" class="custom-select">
                                             <option value="phone">Mobile / Phone Number</option>
+                                            <option value="case">Case ID (e.g. TG-PK-20491)</option>
                                             <option value="identity">Identity Card / Tax Identifier</option>
                                             <option value="account">Bank Account / IBAN / Routing</option>
                                             <option value="email">Email Address</option>
@@ -705,7 +766,7 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <i class="fa-solid fa-link text-cyan"></i>
-                                    <h3>Domain Structure & Reputation Analyzer</h3>
+                                    <h3>Synthetic URL Structure & Risk Analyzer</h3>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -806,6 +867,29 @@
                                 <div class="sb-content">
                                     <h4 id="rpt-success-id">REPORT SUBMITTED: RPT-PK-839201</h4>
                                     <p>Report successfully recorded in the demo investigation queue for this country sector. synthetic cases created automatically if threat thresholds are exceeded.</p>
+                                </div>
+                            </div>
+
+                            <!-- Submitted Reports Ledger Container -->
+                            <div class="margin-top-lg">
+                                <h4 class="margin-bottom-sm"><i class="fa-solid fa-list-check text-cyan"></i> Submitted Synthetic Reports Queue</h4>
+                                <div class="overflow-x">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Report ID</th>
+                                                <th>Sector</th>
+                                                <th>Category</th>
+                                                <th>Target</th>
+                                                <th>Submitted Date</th>
+                                                <th>Status</th>
+                                                <th>Risk Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="submitted-reports-tbody">
+                                            <!-- Dynamically injected via JS -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

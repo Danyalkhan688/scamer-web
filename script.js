@@ -1,6 +1,6 @@
 /* ==========================================================================
    TRUSTGUARD AI — Fraud, Scam & Threat Intelligence Platform
-   Core Application Engine & Multi-Country Configuration
+   Core Application Engine & Synthetic Data Architecture
    ========================================================================== */
 
 // --------------------------------------------------------------------------
@@ -16,17 +16,18 @@ const countrySystems = {
         identityLabel: 'CNIC-style Identity Card',
         identityExample: '42101-9824102-3',
         phoneFormat: '+92 3XX XXXXXXX',
-        phoneExample: '+92 300 8291042',
+        phoneRegex: /^\+?92\s?3\d{2}\s?\d{7}$/,
+        phoneExample: '+92 300 1112233',
         accountLabel: 'Bank IBAN / Account',
         accountExample: 'PK36 FAYS 0001 2984 0192 01',
         authorityName: 'Federal Investigation Authority (Demo Simulation)',
         casePrefix: 'TG-PK-',
         searchPlaceholder: 'Search PK Phone (+92...), CNIC (42101...), IBAN, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious PK Phone', type: 'phone', value: '+92 300 8291042' },
-            { label: 'Synthetic CNIC Record', type: 'identity', value: '42101-9824102-3' },
-            { label: 'Mule Account IBAN', type: 'account', value: 'PK36 FAYS 0001 2984 0192 01' },
-            { label: 'Phishing URL', type: 'url', value: 'http://verify-bank-pk-sec.top/login' }
+            { label: 'Critical Match (+92 300 1112233)', type: 'phone', value: '+92 300 1112233' },
+            { label: 'Suspicious Match (+92 300 5556677)', type: 'phone', value: '+92 300 5556677' },
+            { label: 'Low Risk Match (+92 300 7778899)', type: 'phone', value: '+92 300 7778899' },
+            { label: 'No Match (+92 300 9998888)', type: 'phone', value: '+92 300 9998888' }
         ],
         stats: {
             threatLevel: 'CRITICAL',
@@ -37,81 +38,160 @@ const countrySystems = {
         demoCases: [
             {
                 id: 'TG-PK-20491',
-                threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
-                confidence: '96%',
+                threatLevel: 'HIGH RISK',
+                threatType: 'Payment Fraud',
+                confidence: '92%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '94%',
                 anomalyLevel: 'SEVERE',
-                priority: 'P0 — IMMEDIATE',
-                targetIdentifier: '+92 300 8291042',
+                priority: 'P1 — URGENT',
+                targetIdentifier: '+92 300 1112233',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 7,
                 created: 'Today 08:42 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 7 },
                 radar: { identity: 92, financial: 96, device: 88, network: 78, behaviour: 90, communication: 65 },
                 fingerprint: {
-                    title: 'Coordinated SIM-Swap & Banking Account Takeover',
+                    title: 'Account Takeover Pattern',
                     match: '94%',
-                    tags: ['Identity Manipulation', 'Device Switch Anomaly', 'High Velocity Transfer', 'Beneficiary Addition', 'OTP Intercept Signal']
+                    tags: ['Identity Manipulation', 'Device Switch Anomaly', 'High Velocity Transfer', 'Beneficiary Addition']
                 },
                 whyFlagged: [
+                    {
+                        title: '3 Previous Fraud Reports Linked',
+                        severity: 'HIGH',
+                        evidence: 'Target number +92 300 1112233 reported in 3 separate incident intakes.',
+                        explanation: 'Repeat offender pattern across mobile banking networks.'
+                    },
                     {
                         title: 'Unusual Transaction Velocity',
                         severity: 'HIGH',
                         evidence: 'Rs. 450,000 transferred across 4 beneficiaries within 8 minutes.',
-                        explanation: 'Transaction frequency is 12x higher than synthetic historical baseline for this profile.'
+                        explanation: 'Transaction frequency is 12x higher than synthetic baseline for this profile.'
                     },
                     {
                         title: 'New Device Hardware Fingerprint',
                         severity: 'CRITICAL',
                         evidence: 'Device ID #DEV-PK-9812 logged in from Lahore via Android emulator.',
                         explanation: 'First-time authentication from an untrusted hardware ID.'
-                    },
-                    {
-                        title: 'Connected Mule Account Network',
-                        severity: 'HIGH',
-                        evidence: 'Target account IBAN PK36 FAYS... linked to 3 previous scam reports.',
-                        explanation: 'Graph analysis confirms multi-entity link to known fraud ledger.'
                     }
                 ],
                 timeline: [
                     { time: '08:42 AM', title: 'New Device Hardware Detected', desc: 'Login attempt from Android Emulator ID #DEV-PK-9812 in Lahore.', threat: 'danger' },
                     { time: '08:44 AM', title: 'Authentication Anomaly', desc: 'Multiple OTP retries via automated SMS channel.', threat: 'warn' },
                     { time: '08:47 AM', title: 'New Beneficiary Added', desc: 'IBAN PK36 FAYS 0001 2984... added to instant transfer list.', threat: 'warn' },
-                    { time: '08:49 AM', title: 'High-Value Transfer Initiated', desc: 'Rs. 250,000 outbound transfer requested.', threat: 'danger' },
-                    { time: '08:50 AM', title: 'Automated P0 Threat Alert Generated', desc: 'Synthetic risk engine flagged case TG-PK-20491 as Critical.', threat: 'danger' }
+                    { time: '08:49 AM', title: 'Large Transaction Attempt', desc: 'Rs. 250,000 outbound transfer requested.', threat: 'danger' },
+                    { time: '08:50 AM', title: 'P1 Risk Alert Generated', desc: 'Synthetic risk engine flagged case TG-PK-20491 as High Risk.', threat: 'danger' }
                 ],
                 graphNodes: [
                     { id: 'n1', label: 'Tariq Ahmed (Victim)', type: 'person', risk: 'low', details: 'Synthetic CNIC: 42101-9824102-3 | Karachi' },
-                    { id: 'n2', label: '+92 300 8291042', type: 'phone', risk: 'critical', details: 'SIM Swap Indicator: HIGH | Carrier: Mobilink-Demo' },
-                    { id: 'n3', label: 'PK36 FAYS 0001 2984', type: 'account', risk: 'critical', details: 'Mule IBAN | Branch: Faysal-Demo | Velocity: Extreme' },
-                    { id: 'n4', label: 'DEV-PK-9812', type: 'device', risk: 'high', details: 'Android Emulator | Rooted: YES | IP: 103.255.4.12' },
-                    { id: 'n5', label: '103.255.4.12', type: 'ip', risk: 'high', details: 'ISP: Cybernet-Demo | VPN Endpoint Detected' }
+                    { id: 'n2', label: '+92 300 1112233', type: 'phone', risk: 'critical', details: 'SIM Swap Flagged | Target Phone' },
+                    { id: 'n3', label: 'PK36 FAYS 0001 2984', type: 'account', risk: 'critical', details: 'Mule IBAN | Branch: Faysal-Demo' },
+                    { id: 'n4', label: 'DEV-PK-9812', type: 'device', risk: 'high', details: 'Android Emulator | Rooted: YES' },
+                    { id: 'n5', label: '103.255.4.12', type: 'ip', risk: 'high', details: 'ISP: Cybernet-Demo | VPN Endpoint' },
+                    { id: 'n6', label: 'support-bank-pk.top', type: 'phone', risk: 'high', details: 'Phishing Landing Domain' },
+                    { id: 'n7', label: 'TG-PK-20491', type: 'person', risk: 'critical', details: 'Master Case Container' }
                 ],
                 graphEdges: [
                     { from: 'n1', to: 'n2', label: 'OWNS_PHONE' },
                     { from: 'n2', to: 'n3', label: 'INITIATED_TX' },
                     { from: 'n2', to: 'n4', label: 'USED_DEVICE' },
-                    { from: 'n4', to: 'n5', label: 'ROUTED_IP' }
+                    { from: 'n4', to: 'n5', label: 'ROUTED_IP' },
+                    { from: 'n5', to: 'n6', label: 'ACCESSED_URL' },
+                    { from: 'n3', to: 'n7', label: 'CASE_LINK' }
                 ],
                 recommendedActions: [
-                    'Immediately place temporary administrative freeze on IBAN PK36 FAYS 0001 2984...',
-                    'Contact telecom provider for SIM verification audit on +92 300 8291042.',
-                    'Examine linked device hardware fingerprint DEV-PK-9812 across cross-bank database.',
-                    'Escalate case file TG-PK-20491 to Cyber Incident Command Response Team.'
+                    'Place temporary administrative freeze on IBAN PK36 FAYS 0001 2984...',
+                    'Contact telecom provider for SIM verification audit on +92 300 1112233.',
+                    'Examine linked device hardware fingerprint DEV-PK-9812 across bank database.',
+                    'Escalate case file TG-PK-20491 to Cyber Incident Response Team.'
                 ]
+            },
+            {
+                id: 'TG-PK-18342',
+                threatLevel: 'SUSPICIOUS',
+                threatType: 'Marketplace Fraud',
+                confidence: '82%',
+                evidenceStrength: 'MEDIUM',
+                patternMatch: '76%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P2 — INVESTIGATE',
+                targetIdentifier: '+92 300 5556677',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 4,
+                created: '2 days ago',
+                status: 'OPEN',
+                riskFactors: { previousReports: 15, recentActivity: 15, knownPattern: 15, linkedEntities: 8, strongEvidence: 5 },
+                radar: { identity: 60, financial: 75, device: 50, network: 40, behaviour: 80, communication: 70 },
+                fingerprint: {
+                    title: 'Advance Fee E-Commerce Scam',
+                    match: '76%',
+                    tags: ['Non-Delivery Complaint', 'Multiple Wallet Transfers']
+                },
+                whyFlagged: [
+                    { title: 'Repeated Buyer Complaints', severity: 'MEDIUM', evidence: '2 independent reports received for target phone +92 300 5556677.', explanation: 'Pattern of taking deposit and cutting communication.' }
+                ],
+                timeline: [
+                    { time: '10:00 AM', title: 'Complaint Intake', desc: 'Buyer reported unfulfilled deposit delivery.', threat: 'warn' }
+                ],
+                graphNodes: [
+                    { id: 'n1', label: '+92 300 5556677', type: 'phone', risk: 'suspicious', details: 'Mobile Wallet Account active' },
+                    { id: 'n2', label: 'Wallet PK00-18342', type: 'account', risk: 'suspicious', details: 'Mule wallet destination' }
+                ],
+                graphEdges: [
+                    { from: 'n1', to: 'n2', label: 'TRANSFERRED' }
+                ],
+                recommendedActions: ['Flag mobile wallet for compliance review.', 'Notify reporting victims.']
+            },
+            {
+                id: 'TG-PK-11983',
+                threatLevel: 'LOW',
+                threatType: 'Unverified Inquiry',
+                confidence: '70%',
+                evidenceStrength: 'WEAK',
+                patternMatch: '22%',
+                anomalyLevel: 'LOW',
+                priority: 'P4 — LOW',
+                targetIdentifier: '+92 300 7778899',
+                previousReportsCount: 0,
+                connectedEntitiesCount: 2,
+                created: '3 days ago',
+                status: 'CLOSED',
+                riskFactors: { previousReports: 0, recentActivity: 5, knownPattern: 5, linkedEntities: 5, strongEvidence: 3 },
+                radar: { identity: 20, financial: 15, device: 10, network: 25, behaviour: 30, communication: 20 },
+                fingerprint: {
+                    title: 'Standard Telecom Profile (No Active Pattern)',
+                    match: '22%',
+                    tags: ['Clean Device History', 'Standard Call Volume']
+                },
+                whyFlagged: [
+                    { title: 'Routine Telemetry Check', severity: 'LOW', evidence: 'Target +92 300 7778899 checked with zero incident reports.', explanation: 'No confirmed scam indicators or anomalous velocity.' }
+                ],
+                timeline: [
+                    { time: '02:00 PM', title: 'Automated Sweep', desc: 'Synthetic index check completed clean.', threat: 'info' }
+                ],
+                graphNodes: [
+                    { id: 'n1', label: '+92 300 7778899', type: 'phone', risk: 'low', details: 'Clean Telemetry Profile' }
+                ],
+                graphEdges: [],
+                recommendedActions: ['No action required.', 'Retain profile in standard monitoring index.']
             },
             {
                 id: 'TG-PK-10948',
                 threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
-                confidence: '91%',
+                threatType: 'Phishing',
+                confidence: '90%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '87%',
                 anomalyLevel: 'ELEVATED',
                 priority: 'P1 — URGENT',
                 targetIdentifier: 'http://verify-bank-pk-sec.top',
+                previousReportsCount: 4,
+                connectedEntitiesCount: 6,
                 created: 'Yesterday 04:15 PM',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
                 radar: { identity: 70, financial: 65, device: 80, network: 95, behaviour: 85, communication: 90 },
                 fingerprint: {
                     title: 'Bank Portal Typosquatting & SMS Phishing',
@@ -131,77 +211,20 @@ const countrySystems = {
                 recommendedActions: ['Initiate synthetic domain takedown request.', 'Broadcast warning bulletin in security feed.']
             },
             {
-                id: 'TG-PK-49201',
-                threatLevel: 'SUSPICIOUS',
-                threatType: 'MARKETPLACE SCAM',
-                confidence: '84%',
-                evidenceStrength: 'MEDIUM',
-                patternMatch: '76%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P2 — INVESTIGATE',
-                targetIdentifier: '+92 333 9182049',
-                created: '2 days ago',
-                status: 'OPEN',
-                radar: { identity: 60, financial: 75, device: 50, network: 40, behaviour: 80, communication: 70 },
-                fingerprint: {
-                    title: 'Advance Fee E-Commerce Scam',
-                    match: '76%',
-                    tags: ['Non-Delivery Complaint', 'Multiple Wallet Transfers']
-                },
-                whyFlagged: [
-                    { title: 'Repeated Buyer Complaints', severity: 'MEDIUM', evidence: '4 independent reports received for same seller phone.', explanation: 'Pattern of taking deposit and cutting communication.' }
-                ],
-                timeline: [
-                    { time: '10:00 AM', title: 'Complaint Intake', desc: 'Buyer reported unfulfilled electronics delivery.', threat: 'warn' }
-                ],
-                graphNodes: [
-                    { id: 'n1', label: '+92 333 9182049', type: 'phone', risk: 'suspicious', details: 'Mobile Wallet Account active' }
-                ],
-                graphEdges: [],
-                recommendedActions: ['Flag mobile wallet for compliance review.', 'Notify reporting victims.']
-            },
-            {
-                id: 'TG-PK-38192',
-                threatLevel: 'GUARDED',
-                threatType: 'INVESTMENT SCAM',
-                confidence: '78%',
-                evidenceStrength: 'MODERATE',
-                patternMatch: '68%',
-                anomalyLevel: 'MODERATE',
-                priority: 'P3 — MONITOR',
-                targetIdentifier: 'crypto-pk-earnings.xyz',
-                created: '3 days ago',
-                status: 'UNDER REVIEW',
-                radar: { identity: 40, financial: 60, device: 30, network: 70, behaviour: 65, communication: 55 },
-                fingerprint: {
-                    title: 'High Yield Crypto Ponzi Simulation',
-                    match: '68%',
-                    tags: ['Unregistered Crypto Portal', 'Telegram Channel Link']
-                },
-                whyFlagged: [
-                    { title: 'Guaranteed Return Claims', severity: 'MEDIUM', evidence: 'Guarantees 200% return in 7 days.', explanation: 'Classic Ponzi scheme text markers.' }
-                ],
-                timeline: [
-                    { time: '02:00 PM', title: 'Social Media Alert', desc: 'Telegram link submitted by analyst.', threat: 'warn' }
-                ],
-                graphNodes: [
-                    { id: 'n1', label: 'crypto-pk-earnings.xyz', type: 'phone', risk: 'guarded', details: 'Unregistered financial service' }
-                ],
-                graphEdges: [],
-                recommendedActions: ['Monitor wallet addresses.', 'Add domain to guarded threat index.']
-            },
-            {
                 id: 'TG-PK-74921',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '98%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '97%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: 'PK09 HABB 0092 1049 8291 02',
+                previousReportsCount: 6,
+                connectedEntitiesCount: 14,
                 created: '4 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 95, financial: 98, device: 90, network: 88, behaviour: 96, communication: 82 },
                 fingerprint: {
                     title: 'Multi-Bank Syndicate Cash-Out Network',
@@ -232,6 +255,7 @@ const countrySystems = {
         identityLabel: 'National Insurance (NI) Number',
         identityExample: 'QQ 12 34 56 A',
         phoneFormat: '+44 7XXX XXXXXX',
+        phoneRegex: /^\+?44\s?7\d{3}\s?\d{6}$/,
         phoneExample: '+44 7700 900142',
         accountLabel: 'Sort Code & Account Number',
         accountExample: '20-45-11 / 83920194',
@@ -239,34 +263,37 @@ const countrySystems = {
         casePrefix: 'TG-UK-',
         searchPlaceholder: 'Search UK Phone (+44...), NI Number, Sort Code, account, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious UK Phone', type: 'phone', value: '+44 7700 900142' },
-            { label: 'Synthetic NI Record', type: 'identity', value: 'QQ 12 34 56 A' },
-            { label: 'Sort Code & Account', type: 'account', value: '20-45-11 / 83920194' },
-            { label: 'HMRC Phishing Link', type: 'url', value: 'http://hmrc-tax-rebate-uk.top/claim' }
+            { label: 'High Risk Match (+44 7700 900142)', type: 'phone', value: '+44 7700 900142' },
+            { label: 'Medium Risk Match (+44 7911 123456)', type: 'phone', value: '+44 7911 123456' },
+            { label: 'Low Risk Match (+44 7700 900999)', type: 'phone', value: '+44 7700 900999' },
+            { label: 'No Match (+44 7700 000000)', type: 'phone', value: '+44 7700 000000' }
         ],
         stats: { threatLevel: 'CRITICAL', activeCases: 5, suspiciousEntities: 19, reportsToday: 24 },
         demoCases: [
             {
                 id: 'TG-UK-58210',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
+                threatType: 'Payment Fraud',
                 confidence: '95%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '92%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '+44 7700 900142',
+                previousReportsCount: 4,
+                connectedEntitiesCount: 8,
                 created: 'Today 09:12 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 10 },
                 radar: { identity: 90, financial: 94, device: 86, network: 80, behaviour: 92, communication: 70 },
                 fingerprint: {
-                    title: 'Authorised Push Payment (APP) Fraud & SIM Swap',
+                    title: 'Authorised Push Payment (APP) Fraud',
                     match: '92%',
-                    tags: ['HMRC Impersonation', 'Rapid Sort-Code Layering', 'New Device Hardware', 'Vulnerable Target Signal']
+                    tags: ['HMRC Impersonation', 'Rapid Sort-Code Layering', 'New Device Hardware']
                 },
                 whyFlagged: [
-                    { title: 'Rapid Outbound Faster Payments', severity: 'CRITICAL', evidence: '£48,000 transferred via Faster Payments in 3 bursts.', explanation: 'Drastic shift from historical spending behavior.' },
-                    { title: 'Untrusted IP Location', severity: 'HIGH', evidence: 'Login IP 82.165.19.41 located in offshore data center.', explanation: 'VPN endpoint obfuscating location.' }
+                    { title: '4 Historical Fraud Reports', severity: 'HIGH', evidence: '+44 7700 900142 flagged in APP scam ledger.', explanation: 'Repeat push payment fraud pattern.' },
+                    { title: 'Rapid Outbound Faster Payments', severity: 'CRITICAL', evidence: '£48,000 transferred via Faster Payments in 3 bursts.', explanation: 'Drastic shift from historical spending behavior.' }
                 ],
                 timeline: [
                     { time: '09:12 AM', title: 'Suspicious Device Login', desc: 'Login from London IP 82.165.19.41 using Firefox Linux.', threat: 'danger' },
@@ -274,7 +301,7 @@ const countrySystems = {
                 ],
                 graphNodes: [
                     { id: 'n1', label: 'Lord Sterling (Victim)', type: 'person', risk: 'low', details: 'NI: QQ 12 34 56 A | Postcode: W1D 3BF' },
-                    { id: 'n2', label: '+44 7700 900142', type: 'phone', risk: 'critical', details: 'Carrier: O2-Demo | SIM Swap FlagGED' },
+                    { id: 'n2', label: '+44 7700 900142', type: 'phone', risk: 'critical', details: 'Carrier: O2-Demo | SIM Swap Flagged' },
                     { id: 'n3', label: '20-45-11 / 83920194', type: 'account', risk: 'critical', details: 'Barclays-Demo Mule Account' }
                 ],
                 graphEdges: [
@@ -284,17 +311,66 @@ const countrySystems = {
                 recommendedActions: ['Issue UK Faster Payments emergency recall.', 'Notify bank fraud desk for account freezing.']
             },
             {
+                id: 'TG-UK-10492',
+                threatLevel: 'SUSPICIOUS',
+                threatType: 'Marketplace Scam',
+                confidence: '82%',
+                evidenceStrength: 'MEDIUM',
+                patternMatch: '74%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P2 — INVESTIGATE',
+                targetIdentifier: '+44 7911 123456',
+                previousReportsCount: 2,
+                connectedEntitiesCount: 4,
+                created: '2 days ago',
+                status: 'OPEN',
+                riskFactors: { previousReports: 15, recentActivity: 15, knownPattern: 15, linkedEntities: 10, strongEvidence: 5 },
+                radar: { identity: 50, financial: 70, device: 60, network: 50, behaviour: 75, communication: 65 },
+                fingerprint: { title: 'Concert Ticket Advance Scam', match: '74%', tags: ['Social Media Listing', 'Bank Transfer Request'] },
+                whyFlagged: [{ title: 'Multiple Ticket Scams Reported', severity: 'MEDIUM', evidence: '2 complaints regarding non-existent festival tickets.', explanation: 'Consistent seller ghosting pattern.' }],
+                timeline: [{ time: '01:00 PM', title: 'Case Created', desc: 'Synthetic report intake compiled.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: '+44 7911 123456', type: 'phone', risk: 'suspicious', details: 'Prepaid SIM' }],
+                graphEdges: [],
+                recommendedActions: ['Flag bank account linked to seller for review.']
+            },
+            {
+                id: 'TG-UK-67392',
+                threatLevel: 'GUARDED',
+                threatType: 'Investment Scam',
+                confidence: '76%',
+                evidenceStrength: 'MODERATE',
+                patternMatch: '65%',
+                anomalyLevel: 'MODERATE',
+                priority: 'P3 — MONITOR',
+                targetIdentifier: '+44 7700 900999',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 2,
+                created: '3 days ago',
+                status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 10, recentActivity: 10, knownPattern: 10, linkedEntities: 5, strongEvidence: 5 },
+                radar: { identity: 40, financial: 55, device: 45, network: 75, behaviour: 60, communication: 50 },
+                fingerprint: { title: 'Unregulated Forex Trading Portal', match: '65%', tags: ['FCA Warning Missing', 'High Pressure Calls'] },
+                whyFlagged: [{ title: 'Unregistered Brokerage', severity: 'MEDIUM', evidence: 'No FCA registration number found.', explanation: 'Operating financial services without authorization.' }],
+                timeline: [{ time: '11:30 AM', title: 'FCA Registry Lookup', desc: 'No matching regulatory record.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: '+44 7700 900999', type: 'phone', risk: 'guarded', details: 'Offshore host' }],
+                graphEdges: [],
+                recommendedActions: ['Cross-reference against FCA warning list.']
+            },
+            {
                 id: 'TG-UK-82914',
                 threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
+                threatType: 'Phishing',
                 confidence: '90%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '88%',
                 anomalyLevel: 'ELEVATED',
                 priority: 'P1 — URGENT',
                 targetIdentifier: 'http://hmrc-tax-rebate-uk.top',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 5,
                 created: 'Yesterday 02:20 PM',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
                 radar: { identity: 75, financial: 70, device: 85, network: 90, behaviour: 80, communication: 95 },
                 fingerprint: { title: 'HMRC Tax Refund Impersonation', match: '88%', tags: ['Government Impersonation', 'Credential Harvesting'] },
                 whyFlagged: [{ title: 'HMRC Brand Misuse', severity: 'HIGH', evidence: 'Phishing page harvesting NI numbers & passwords.', explanation: 'Fake government gateway.' }],
@@ -304,57 +380,20 @@ const countrySystems = {
                 recommendedActions: ['Submit URL to NCSC UK reporting channel.']
             },
             {
-                id: 'TG-UK-10492',
-                threatLevel: 'SUSPICIOUS',
-                threatType: 'MARKETPLACE SCAM',
-                confidence: '82%',
-                evidenceStrength: 'MEDIUM',
-                patternMatch: '74%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P2 — INVESTIGATE',
-                targetIdentifier: '+44 7911 123456',
-                created: '2 days ago',
-                status: 'OPEN',
-                radar: { identity: 50, financial: 70, device: 60, network: 50, behaviour: 75, communication: 65 },
-                fingerprint: { title: 'Concert Ticket Advance Scam', match: '74%', tags: ['Social Media Listing', 'Bank Transfer Request'] },
-                whyFlagged: [{ title: 'Multiple Ticket Scams Reported', severity: 'MEDIUM', evidence: '3 complaints regarding non-existent festival tickets.', explanation: 'Consistent seller ghosting pattern.' }],
-                timeline: [{ time: '01:00 PM', title: 'Case Created', desc: 'Synthetic report intake compiled.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: '+44 7911 123456', type: 'phone', risk: 'suspicious', details: 'Prepaid SIM' }],
-                graphEdges: [],
-                recommendedActions: ['Flag bank account linked to seller for review.']
-            },
-            {
-                id: 'TG-UK-67392',
-                threatLevel: 'GUARDED',
-                threatType: 'INVESTMENT SCAM',
-                confidence: '76%',
-                evidenceStrength: 'MODERATE',
-                patternMatch: '65%',
-                anomalyLevel: 'MODERATE',
-                priority: 'P3 — MONITOR',
-                targetIdentifier: 'uk-crypto-wealth.co.uk',
-                created: '3 days ago',
-                status: 'UNDER REVIEW',
-                radar: { identity: 40, financial: 55, device: 45, network: 75, behaviour: 60, communication: 50 },
-                fingerprint: { title: 'Unregulated Forex Trading Portal', match: '65%', tags: ['FCA Warning Missing', 'High Pressure Calls'] },
-                whyFlagged: [{ title: 'Unregistered Brokerage', severity: 'MEDIUM', evidence: 'No FCA registration number found.', explanation: 'Operating financial services without authorization.' }],
-                timeline: [{ time: '11:30 AM', title: 'FCA Registry Lookup', desc: 'No matching regulatory record.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'uk-crypto-wealth.co.uk', type: 'phone', risk: 'guarded', details: 'Offshore host' }],
-                graphEdges: [],
-                recommendedActions: ['Cross-reference against FCA warning list.']
-            },
-            {
                 id: 'TG-UK-48201',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '97%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '95%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '40-02-18 / 91028401',
+                previousReportsCount: 5,
+                connectedEntitiesCount: 11,
                 created: '5 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 92, financial: 97, device: 88, network: 90, behaviour: 94, communication: 80 },
                 fingerprint: { title: 'London Financial Mule Network', match: '95%', tags: ['Multi-Account Layering', 'Crypto Exchange Cashout'] },
                 whyFlagged: [{ title: 'Mass Mule Pooling', severity: 'CRITICAL', evidence: '£350,000 routed across 9 UK sort codes.', explanation: 'Layering ring detected.' }],
@@ -375,6 +414,7 @@ const countrySystems = {
         identityLabel: 'Social Security Number (SSN)',
         identityExample: 'XXX-XX-6719',
         phoneFormat: '+1 (555) XXX-XXXX',
+        phoneRegex: /^\+?1?\s?\(?555\)?[\s\-]?\d{3}[\s\-]?\d{4}$/,
         phoneExample: '+1 (555) 019-2834',
         accountLabel: 'Routing Number & Account',
         accountExample: '021000021 / 94820193',
@@ -382,25 +422,28 @@ const countrySystems = {
         casePrefix: 'TG-US-',
         searchPlaceholder: 'Search US Phone (+1...), SSN, Routing #, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious US Phone', type: 'phone', value: '+1 (555) 019-2834' },
-            { label: 'Synthetic SSN Record', type: 'identity', value: 'XXX-XX-6719' },
-            { label: 'Routing & Account', type: 'account', value: '021000021 / 94820193' },
-            { label: 'IRS Phishing Portal', type: 'url', value: 'http://irs-tax-refund-portal.info/claim' }
+            { label: 'High Risk Match (+1 (555) 019-2834)', type: 'phone', value: '+1 (555) 019-2834' },
+            { label: 'Medium Risk Match (+1 (555) 382-9102)', type: 'phone', value: '+1 (555) 382-9102' },
+            { label: 'Low Risk Match (+1 (555) 123-4567)', type: 'phone', value: '+1 (555) 123-4567' },
+            { label: 'No Match (+1 (555) 999-9999)', type: 'phone', value: '+1 (555) 999-9999' }
         ],
         stats: { threatLevel: 'CRITICAL', activeCases: 5, suspiciousEntities: 31, reportsToday: 42 },
         demoCases: [
             {
                 id: 'TG-US-73192',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
+                threatType: 'Payment Fraud',
                 confidence: '97%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '95%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '+1 (555) 019-2834',
+                previousReportsCount: 5,
+                connectedEntitiesCount: 9,
                 created: 'Today 07:30 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 94, financial: 98, device: 90, network: 82, behaviour: 94, communication: 75 },
                 fingerprint: {
                     title: 'Synthetic Identity Theft & Wire Transfer Fraud',
@@ -408,8 +451,8 @@ const countrySystems = {
                     tags: ['SSN Manipulation', 'Fast ACH Wire Out', 'Device Emulator', 'VPN Tunneling']
                 },
                 whyFlagged: [
-                    { title: 'Immediate ACH Wire Outbound', severity: 'CRITICAL', evidence: '$125,000 ACH wire initiated to offshore account.', explanation: 'Unusual velocity for this consumer profile.' },
-                    { title: 'SSN Verification Inconsistency', severity: 'HIGH', evidence: 'SSN XXX-XX-6719 matched to multiple synthetic addresses.', explanation: 'Identity fragmentation detected.' }
+                    { title: '5 Historical Incident Reports', severity: 'CRITICAL', evidence: 'Target +1 (555) 019-2834 linked to wire fraud reports across 3 states.', explanation: 'Cross-border wire fraud pattern.' },
+                    { title: 'Immediate ACH Wire Outbound', severity: 'CRITICAL', evidence: '$125,000 ACH wire initiated to offshore account.', explanation: 'Unusual velocity for this consumer profile.' }
                 ],
                 timeline: [
                     { time: '07:30 AM', title: 'Login from New State', desc: 'IP 64.233.160.1 located in Miami data center.', threat: 'danger' },
@@ -427,57 +470,20 @@ const countrySystems = {
                 recommendedActions: ['Request immediate Fedwire recall.', 'Transmit IC3 synthetic incident report.']
             },
             {
-                id: 'TG-US-91823',
-                threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
-                confidence: '92%',
-                evidenceStrength: 'STRONG',
-                patternMatch: '89%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P1 — URGENT',
-                targetIdentifier: 'http://irs-tax-refund-portal.info',
-                created: 'Yesterday 01:10 PM',
-                status: 'UNDER REVIEW',
-                radar: { identity: 80, financial: 75, device: 88, network: 92, behaviour: 82, communication: 94 },
-                fingerprint: { title: 'IRS Impersonation Portal', match: '89%', tags: ['Tax Refund Phish', 'SSN Harvester'] },
-                whyFlagged: [{ title: 'IRS Seal Misuse', severity: 'HIGH', evidence: 'Harvesting SSN, W2 forms, and bank logins.', explanation: 'Federal authority impersonation.' }],
-                timeline: [{ time: '01:10 PM', title: 'Phishing Feed Detection', desc: 'Automated threat scanner flagged domain.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'irs-tax-refund-portal.info', type: 'phone', risk: 'high', details: 'Suspicious Domain' }],
-                graphEdges: [],
-                recommendedActions: ['Notify US Cyber Threat Task Force.']
-            },
-            {
-                id: 'TG-US-48291',
-                threatLevel: 'SUSPICIOUS',
-                threatType: 'PAYMENT FRAUD',
-                confidence: '83%',
-                evidenceStrength: 'MEDIUM',
-                patternMatch: '75%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P2 — INVESTIGATE',
-                targetIdentifier: '$scam-tag-user',
-                created: '2 days ago',
-                status: 'OPEN',
-                radar: { identity: 55, financial: 78, device: 60, network: 50, behaviour: 80, communication: 65 },
-                fingerprint: { title: 'P2P App Payment Fraud', match: '75%', tags: ['Fake Zelle Transfer', 'Seller Impersonation'] },
-                whyFlagged: [{ title: 'Zelle Payment Reversal Scam', severity: 'MEDIUM', evidence: 'Fake payment confirmation screenshot sent to victim.', explanation: 'Social engineering payment manipulation.' }],
-                timeline: [{ time: '10:15 AM', title: 'Victim Report Filed', desc: '$1,200 loss reported.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: '$scam-tag-user', type: 'phone', risk: 'suspicious', details: 'P2P Wallet Handle' }],
-                graphEdges: [],
-                recommendedActions: ['Flag P2P handle for security hold.']
-            },
-            {
                 id: 'TG-US-62910',
-                threatLevel: 'GUARDED',
-                threatType: 'MARKETPLACE SCAM',
+                threatLevel: 'SUSPICIOUS',
+                threatType: 'Marketplace Scam',
                 confidence: '75%',
                 evidenceStrength: 'MODERATE',
                 patternMatch: '64%',
                 anomalyLevel: 'MODERATE',
                 priority: 'P3 — MONITOR',
                 targetIdentifier: '+1 (555) 382-9102',
+                previousReportsCount: 2,
+                connectedEntitiesCount: 4,
                 created: '4 days ago',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 15, recentActivity: 10, knownPattern: 15, linkedEntities: 10, strongEvidence: 5 },
                 radar: { identity: 45, financial: 60, device: 40, network: 55, behaviour: 65, communication: 55 },
                 fingerprint: { title: 'Rental Housing Scam', match: '64%', tags: ['Fake Property Deposit', 'Wire Request'] },
                 whyFlagged: [{ title: 'Duplicate Craigslist Listing', severity: 'MEDIUM', evidence: 'Listing images stolen from Zillow.', explanation: 'Uncontrolled advance deposit request.' }],
@@ -487,17 +493,66 @@ const countrySystems = {
                 recommendedActions: ['Issue warning on local housing board.']
             },
             {
+                id: 'TG-US-48291',
+                threatLevel: 'GUARDED',
+                threatType: 'Payment Fraud',
+                confidence: '83%',
+                evidenceStrength: 'MEDIUM',
+                patternMatch: '75%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P2 — INVESTIGATE',
+                targetIdentifier: '+1 (555) 123-4567',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 3,
+                created: '2 days ago',
+                status: 'OPEN',
+                riskFactors: { previousReports: 10, recentActivity: 10, knownPattern: 10, linkedEntities: 5, strongEvidence: 5 },
+                radar: { identity: 55, financial: 78, device: 60, network: 50, behaviour: 80, communication: 65 },
+                fingerprint: { title: 'P2P App Payment Fraud', match: '75%', tags: ['Fake Zelle Transfer', 'Seller Impersonation'] },
+                whyFlagged: [{ title: 'Zelle Payment Reversal Scam', severity: 'MEDIUM', evidence: 'Fake payment confirmation screenshot sent to victim.', explanation: 'Social engineering payment manipulation.' }],
+                timeline: [{ time: '10:15 AM', title: 'Victim Report Filed', desc: '$1,200 loss reported.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: '+1 (555) 123-4567', type: 'phone', risk: 'suspicious', details: 'P2P Wallet Handle' }],
+                graphEdges: [],
+                recommendedActions: ['Flag P2P handle for security hold.']
+            },
+            {
+                id: 'TG-US-91823',
+                threatLevel: 'HIGH RISK',
+                threatType: 'Phishing',
+                confidence: '92%',
+                evidenceStrength: 'STRONG',
+                patternMatch: '89%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P1 — URGENT',
+                targetIdentifier: 'http://irs-tax-refund-portal.info',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 5,
+                created: 'Yesterday 01:10 PM',
+                status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
+                radar: { identity: 80, financial: 75, device: 88, network: 92, behaviour: 82, communication: 94 },
+                fingerprint: { title: 'IRS Impersonation Portal', match: '89%', tags: ['Tax Refund Phish', 'SSN Harvester'] },
+                whyFlagged: [{ title: 'IRS Seal Misuse', severity: 'HIGH', evidence: 'Harvesting SSN, W2 forms, and bank logins.', explanation: 'Federal authority impersonation.' }],
+                timeline: [{ time: '01:10 PM', title: 'Phishing Feed Detection', desc: 'Automated threat scanner flagged domain.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: 'irs-tax-refund-portal.info', type: 'phone', risk: 'high', details: 'Suspicious Domain' }],
+                graphEdges: [],
+                recommendedActions: ['Notify US Cyber Threat Task Force.']
+            },
+            {
                 id: 'TG-US-31049',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '98%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '96%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '121000358 / 881920491',
+                previousReportsCount: 7,
+                connectedEntitiesCount: 18,
                 created: '6 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 96, financial: 99, device: 92, network: 90, behaviour: 96, communication: 85 },
                 fingerprint: { title: 'Cross-State Crypto Cashout Ring', match: '96%', tags: ['Multi-State ACH Funnel', 'Crypto Exchange Cashout'] },
                 whyFlagged: [{ title: 'Multi-Million Wire Ring', severity: 'CRITICAL', evidence: '$3.4M funneled through 18 bank accounts in 5 states.', explanation: 'Coordinated laundering ring.' }],
@@ -518,6 +573,7 @@ const countrySystems = {
         identityLabel: 'Emirates ID (EID)',
         identityExample: '784-1992-1849201-1',
         phoneFormat: '+971 5X XXX XXXX',
+        phoneRegex: /^\+?971\s?5\d[\s\-]?\d{3}[\s\-]?\d{4}$/,
         phoneExample: '+971 50 829 1049',
         accountLabel: 'UAE IBAN Account',
         accountExample: 'AE07 0330 0000 1102 9384 101',
@@ -525,25 +581,28 @@ const countrySystems = {
         casePrefix: 'TG-AE-',
         searchPlaceholder: 'Search UAE Phone (+971...), Emirates ID, IBAN, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious UAE Phone', type: 'phone', value: '+971 50 829 1049' },
-            { label: 'Synthetic Emirates ID', type: 'identity', value: '784-1992-1849201-1' },
-            { label: 'UAE IBAN Account', type: 'account', value: 'AE07 0330 0000 1102 9384 101' },
-            { label: 'Delivery Impersonation URL', type: 'url', value: 'http://emirates-post-tracking-ae.top' }
+            { label: 'High Risk Match (+971 50 829 1049)', type: 'phone', value: '+971 50 829 1049' },
+            { label: 'Medium Risk Match (+971 52 910 2841)', type: 'phone', value: '+971 52 910 2841' },
+            { label: 'Low Risk Match (+971 50 111 2233)', type: 'phone', value: '+971 50 111 2233' },
+            { label: 'No Match (+971 50 000 0000)', type: 'phone', value: '+971 50 000 0000' }
         ],
         stats: { threatLevel: 'CRITICAL', activeCases: 5, suspiciousEntities: 18, reportsToday: 15 },
         demoCases: [
             {
                 id: 'TG-AE-41872',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
+                threatType: 'Payment Fraud',
                 confidence: '96%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '93%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '+971 50 829 1049',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 6,
                 created: 'Today 10:05 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 10 },
                 radar: { identity: 92, financial: 95, device: 88, network: 80, behaviour: 90, communication: 70 },
                 fingerprint: {
                     title: 'Emirates Post Delivery Scam & Banking Takeover',
@@ -571,37 +630,20 @@ const countrySystems = {
                 recommendedActions: ['Freeze IBAN AE07 0330... across UAE Central Bank clearing.', 'Flag domain emirates-post-tracking-ae.top.']
             },
             {
-                id: 'TG-AE-82910',
-                threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
-                confidence: '90%',
-                evidenceStrength: 'STRONG',
-                patternMatch: '86%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P1 — URGENT',
-                targetIdentifier: 'http://emirates-post-tracking-ae.top',
-                created: 'Yesterday 03:40 PM',
-                status: 'UNDER REVIEW',
-                radar: { identity: 78, financial: 70, device: 82, network: 90, behaviour: 80, communication: 92 },
-                fingerprint: { title: 'Postal Fee Phishing Gate', match: '86%', tags: ['SMS Delivery Scam', 'Credit Card Harvester'] },
-                whyFlagged: [{ title: 'Emirates Post Brand Misuse', severity: 'HIGH', evidence: 'Demanding 10 AED package delivery fee to steal card credentials.', explanation: 'Widespread postal phishing.' }],
-                timeline: [{ time: '03:40 PM', title: 'Threat Intelligence Sweep', desc: 'Domain indexed by UAE scanner.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'emirates-post-tracking-ae.top', type: 'phone', risk: 'high', details: 'Active Phish' }],
-                graphEdges: [],
-                recommendedActions: ['Request emergency ISP domain block in UAE.']
-            },
-            {
                 id: 'TG-AE-19482',
                 threatLevel: 'SUSPICIOUS',
-                threatType: 'IMPERSONATION',
+                threatType: 'Impersonation',
                 confidence: '81%',
                 evidenceStrength: 'MEDIUM',
                 patternMatch: '73%',
                 anomalyLevel: 'ELEVATED',
                 priority: 'P2 — INVESTIGATE',
                 targetIdentifier: '+971 52 910 2841',
+                previousReportsCount: 2,
+                connectedEntitiesCount: 4,
                 created: '2 days ago',
                 status: 'OPEN',
+                riskFactors: { previousReports: 15, recentActivity: 15, knownPattern: 15, linkedEntities: 10, strongEvidence: 5 },
                 radar: { identity: 65, financial: 60, device: 50, network: 45, behaviour: 80, communication: 75 },
                 fingerprint: { title: 'Police / Central Bank Impersonation', match: '73%', tags: ['WhatsApp Threat Message', 'EID Block Warning'] },
                 whyFlagged: [{ title: 'Authority Threat Language', severity: 'MEDIUM', evidence: 'Caller claiming EID will be suspended unless fine paid.', explanation: 'Classic panic inducement.' }],
@@ -613,35 +655,64 @@ const countrySystems = {
             {
                 id: 'TG-AE-64920',
                 threatLevel: 'GUARDED',
-                threatType: 'INVESTMENT SCAM',
+                threatType: 'Investment Scam',
                 confidence: '74%',
                 evidenceStrength: 'MODERATE',
                 patternMatch: '62%',
                 anomalyLevel: 'MODERATE',
                 priority: 'P3 — MONITOR',
-                targetIdentifier: 'dubai-realestate-yields.com',
+                targetIdentifier: '+971 50 111 2233',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 3,
                 created: '4 days ago',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 10, recentActivity: 10, knownPattern: 10, linkedEntities: 5, strongEvidence: 5 },
                 radar: { identity: 40, financial: 55, device: 35, network: 70, behaviour: 60, communication: 50 },
                 fingerprint: { title: 'Unlicensed Off-Plan Property Scam', match: '62%', tags: ['RERA Verification Missing', 'Crypto Deposit'] },
                 whyFlagged: [{ title: 'No RERA Registration', severity: 'MEDIUM', evidence: 'Project not listed in RERA database.', explanation: 'Unapproved real estate offering.' }],
                 timeline: [{ time: '02:00 PM', title: 'Registry Query', desc: 'Zero RERA registration matches.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'dubai-realestate-yields.com', type: 'phone', risk: 'guarded', details: 'Unregistered Portal' }],
+                graphNodes: [{ id: 'n1', label: '+971 50 111 2233', type: 'phone', risk: 'guarded', details: 'Unregistered Portal' }],
                 graphEdges: [],
                 recommendedActions: ['Cross-check with Dubai Land Department.']
             },
             {
+                id: 'TG-AE-82910',
+                threatLevel: 'HIGH RISK',
+                threatType: 'Phishing',
+                confidence: '90%',
+                evidenceStrength: 'STRONG',
+                patternMatch: '86%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P1 — URGENT',
+                targetIdentifier: 'http://emirates-post-tracking-ae.top',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 5,
+                created: 'Yesterday 03:40 PM',
+                status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
+                radar: { identity: 78, financial: 70, device: 82, network: 90, behaviour: 80, communication: 92 },
+                fingerprint: { title: 'Postal Fee Phishing Gate', match: '86%', tags: ['SMS Delivery Scam', 'Credit Card Harvester'] },
+                whyFlagged: [{ title: 'Emirates Post Brand Misuse', severity: 'HIGH', evidence: 'Demanding 10 AED package delivery fee to steal card credentials.', explanation: 'Widespread postal phishing.' }],
+                timeline: [{ time: '03:40 PM', title: 'Threat Intelligence Sweep', desc: 'Domain indexed by UAE scanner.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: 'emirates-post-tracking-ae.top', type: 'phone', risk: 'high', details: 'Active Phish' }],
+                graphEdges: [],
+                recommendedActions: ['Request emergency ISP domain block in UAE.']
+            },
+            {
                 id: 'TG-AE-38291',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '97%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '95%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: 'AE44 0220 0000 9812 0492 102',
+                previousReportsCount: 5,
+                connectedEntitiesCount: 12,
                 created: '6 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 94, financial: 98, device: 90, network: 88, behaviour: 95, communication: 82 },
                 fingerprint: { title: 'Regional Crypto OTC Cashout Ring', match: '95%', tags: ['Cross-Border Layering', 'High Volume OTC Transfers'] },
                 whyFlagged: [{ title: 'Multi-Million AED Cashout Ring', severity: 'CRITICAL', evidence: 'AED 4,500,000 moved through 8 UAE accounts.', explanation: 'Complex money laundering pattern.' }],
@@ -662,6 +733,7 @@ const countrySystems = {
         identityLabel: 'Social Insurance Number (SIN)',
         identityExample: '982-104-921',
         phoneFormat: '+1 (416) XXX-XXXX',
+        phoneRegex: /^\+?1?\s?\(?416\)?[\s\-]?\d{3}[\s\-]?\d{4}$/,
         phoneExample: '+1 (416) 555-0192',
         accountLabel: 'Transit / Inst & Account Number',
         accountExample: '00040-004 / 8291049',
@@ -669,25 +741,28 @@ const countrySystems = {
         casePrefix: 'TG-CA-',
         searchPlaceholder: 'Search CA Phone (+1...), SIN Number, Transit #, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious CA Phone', type: 'phone', value: '+1 (416) 555-0192' },
-            { label: 'Synthetic SIN Record', type: 'identity', value: '982-104-921' },
-            { label: 'Transit & Account', type: 'account', value: '00040-004 / 8291049' },
-            { label: 'CRA Refund Phish', type: 'url', value: 'http://cra-interac-e-transfer-claim.top' }
+            { label: 'High Risk Match (+1 (416) 555-0192)', type: 'phone', value: '+1 (416) 555-0192' },
+            { label: 'Medium Risk Match (+1 (604) 918-2049)', type: 'phone', value: '+1 (604) 918-2049' },
+            { label: 'Low Risk Match (+1 (416) 555-9999)', type: 'phone', value: '+1 (416) 555-9999' },
+            { label: 'No Match (+1 (416) 000-0000)', type: 'phone', value: '+1 (416) 000-0000' }
         ],
         stats: { threatLevel: 'CRITICAL', activeCases: 5, suspiciousEntities: 21, reportsToday: 29 },
         demoCases: [
             {
                 id: 'TG-CA-61942',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
+                threatType: 'Payment Fraud',
                 confidence: '95%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '92%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '+1 (416) 555-0192',
+                previousReportsCount: 4,
+                connectedEntitiesCount: 7,
                 created: 'Today 08:15 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 10 },
                 radar: { identity: 90, financial: 96, device: 86, network: 78, behaviour: 90, communication: 72 },
                 fingerprint: {
                     title: 'Interac e-Transfer Interception & Banking ATO',
@@ -714,37 +789,20 @@ const countrySystems = {
                 recommendedActions: ['Place Interac fraud recall request.', 'Notify Canadian Anti-Fraud Centre (CAFC).']
             },
             {
-                id: 'TG-CA-10492',
-                threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
-                confidence: '91%',
-                evidenceStrength: 'STRONG',
-                patternMatch: '87%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P1 — URGENT',
-                targetIdentifier: 'http://cra-interac-e-transfer-claim.top',
-                created: 'Yesterday 04:00 PM',
-                status: 'UNDER REVIEW',
-                radar: { identity: 76, financial: 72, device: 84, network: 88, behaviour: 82, communication: 93 },
-                fingerprint: { title: 'CRA Tax Refund Phishing', match: '87%', tags: ['Government Impersonation', 'Interac Brand Misuse'] },
-                whyFlagged: [{ title: 'Fake Canada Revenue Agency Gateway', severity: 'HIGH', evidence: 'Demanding SIN number and banking login to claim refund.', explanation: 'Credential harvesting portal.' }],
-                timeline: [{ time: '04:00 PM', title: 'Crawler Ingestion', desc: 'Identified CRA logos on non-gov domain.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'cra-interac-e-transfer-claim.top', type: 'phone', risk: 'high', details: 'Phish Domain' }],
-                graphEdges: [],
-                recommendedActions: ['Issue Takedown Notice to Canadian domain registrar.']
-            },
-            {
                 id: 'TG-CA-83920',
                 threatLevel: 'SUSPICIOUS',
-                threatType: 'MARKETPLACE SCAM',
+                threatType: 'Marketplace Scam',
                 confidence: '80%',
                 evidenceStrength: 'MEDIUM',
                 patternMatch: '72%',
                 anomalyLevel: 'ELEVATED',
                 priority: 'P2 — INVESTIGATE',
                 targetIdentifier: '+1 (604) 918-2049',
+                previousReportsCount: 2,
+                connectedEntitiesCount: 4,
                 created: '3 days ago',
                 status: 'OPEN',
+                riskFactors: { previousReports: 15, recentActivity: 15, knownPattern: 15, linkedEntities: 10, strongEvidence: 5 },
                 radar: { identity: 50, financial: 65, device: 55, network: 45, behaviour: 75, communication: 65 },
                 fingerprint: { title: 'Kijiji Vehicle Advance Deposit Fraud', match: '72%', tags: ['Fake Car Listing', 'Interac Transfer Request'] },
                 whyFlagged: [{ title: 'Multiple Deposit Complaints', severity: 'MEDIUM', evidence: 'Seller demanding CA$ 2,000 deposit before viewing.', explanation: 'Classic non-existent item scam.' }],
@@ -756,35 +814,64 @@ const countrySystems = {
             {
                 id: 'TG-CA-49201',
                 threatLevel: 'GUARDED',
-                threatType: 'INVESTMENT SCAM',
+                threatType: 'Investment Scam',
                 confidence: '75%',
                 evidenceStrength: 'MODERATE',
                 patternMatch: '63%',
                 anomalyLevel: 'MODERATE',
                 priority: 'P3 — MONITOR',
-                targetIdentifier: 'canada-wealth-investors.ca',
+                targetIdentifier: '+1 (416) 555-9999',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 3,
                 created: '4 days ago',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 10, recentActivity: 10, knownPattern: 10, linkedEntities: 5, strongEvidence: 5 },
                 radar: { identity: 40, financial: 55, device: 40, network: 70, behaviour: 60, communication: 50 },
                 fingerprint: { title: 'Unregistered Crypto Advisory', match: '63%', tags: ['OSC Regulatory Missing', 'High Yield Guarantee'] },
                 whyFlagged: [{ title: 'Ontario Securities Commission Warning', severity: 'MEDIUM', evidence: 'Not registered with OSC or IIROC.', explanation: 'Unlicensed investment solicitation.' }],
                 timeline: [{ time: '01:00 PM', title: 'OSC Database Check', desc: 'No active license found.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'canada-wealth-investors.ca', type: 'phone', risk: 'guarded', details: 'Offshore host' }],
+                graphNodes: [{ id: 'n1', label: '+1 (416) 555-9999', type: 'phone', risk: 'guarded', details: 'Offshore host' }],
                 graphEdges: [],
                 recommendedActions: ['Cross-reference against OSC Investor Warning List.']
             },
             {
+                id: 'TG-CA-10492',
+                threatLevel: 'HIGH RISK',
+                threatType: 'Phishing',
+                confidence: '91%',
+                evidenceStrength: 'STRONG',
+                patternMatch: '87%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P1 — URGENT',
+                targetIdentifier: 'http://cra-interac-e-transfer-claim.top',
+                previousReportsCount: 4,
+                connectedEntitiesCount: 6,
+                created: 'Yesterday 04:00 PM',
+                status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
+                radar: { identity: 76, financial: 72, device: 84, network: 88, behaviour: 82, communication: 93 },
+                fingerprint: { title: 'CRA Tax Refund Phishing', match: '87%', tags: ['Government Impersonation', 'Interac Brand Misuse'] },
+                whyFlagged: [{ title: 'Fake Canada Revenue Agency Gateway', severity: 'HIGH', evidence: 'Demanding SIN number and banking login to claim refund.', explanation: 'Credential harvesting portal.' }],
+                timeline: [{ time: '04:00 PM', title: 'Crawler Ingestion', desc: 'Identified CRA logos on non-gov domain.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: 'cra-interac-e-transfer-claim.top', type: 'phone', risk: 'high', details: 'Phish Domain' }],
+                graphEdges: [],
+                recommendedActions: ['Issue Takedown Notice to Canadian domain registrar.']
+            },
+            {
                 id: 'TG-CA-71029',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '96%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '94%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '00003-010 / 91820491',
+                previousReportsCount: 6,
+                connectedEntitiesCount: 11,
                 created: '6 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 93, financial: 97, device: 88, network: 86, behaviour: 94, communication: 80 },
                 fingerprint: { title: 'Cross-Provincial Money Laundering Network', match: '94%', tags: ['Interac Layering Ring', 'ATM Cash-Out Velocity'] },
                 whyFlagged: [{ title: 'Multi-Bank Interac Funnel', severity: 'CRITICAL', evidence: 'CA$ 1,800,000 funneled through 11 accounts in ON & QC.', explanation: 'Layering ring detected.' }],
@@ -805,6 +892,7 @@ const countrySystems = {
         identityLabel: 'Tax File Number (TFN)',
         identityExample: '982 104 921',
         phoneFormat: '+61 4XX XXX XXX',
+        phoneRegex: /^\+?61\s?4\d{2}\s?\d{3}\s?\d{3}$/,
         phoneExample: '+61 412 890 149',
         accountLabel: 'BSB & Account Number',
         accountExample: '062-000 / 10928491',
@@ -812,25 +900,28 @@ const countrySystems = {
         casePrefix: 'TG-AU-',
         searchPlaceholder: 'Search AU Phone (+61...), TFN, BSB #, email, case ID...',
         sampleScannerValues: [
-            { label: 'Suspicious AU Phone', type: 'phone', value: '+61 412 890 149' },
-            { label: 'Synthetic TFN Record', type: 'identity', value: '982 104 921' },
-            { label: 'BSB & Account', type: 'account', value: '062-000 / 10928491' },
-            { label: 'myGov Phishing Portal', type: 'url', value: 'http://mygov-tax-refund-au.top' }
+            { label: 'High Risk Match (+61 412 890 149)', type: 'phone', value: '+61 412 890 149' },
+            { label: 'Medium Risk Match (+61 400 123 456)', type: 'phone', value: '+61 400 123 456' },
+            { label: 'Low Risk Match (+61 412 000 111)', type: 'phone', value: '+61 412 000 111' },
+            { label: 'No Match (+61 400 000 000)', type: 'phone', value: '+61 400 000 000' }
         ],
         stats: { threatLevel: 'CRITICAL', activeCases: 5, suspiciousEntities: 22, reportsToday: 31 },
         demoCases: [
             {
                 id: 'TG-AU-39081',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'ACCOUNT TAKEOVER',
+                threatType: 'Payment Fraud',
                 confidence: '96%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '93%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '+61 412 890 149',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 6,
                 created: 'Today 09:40 AM',
                 status: 'OPEN',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 10 },
                 radar: { identity: 91, financial: 95, device: 87, network: 79, behaviour: 91, communication: 73 },
                 fingerprint: {
                     title: 'myGov Impersonation & PayID Account Hijack',
@@ -857,37 +948,20 @@ const countrySystems = {
                 recommendedActions: ['Trigger emergency PayID payment hold.', 'Report to National Anti-Scam Centre (NASC).']
             },
             {
-                id: 'TG-AU-82910',
-                threatLevel: 'HIGH RISK',
-                threatType: 'PHISHING',
-                confidence: '90%',
-                evidenceStrength: 'STRONG',
-                patternMatch: '86%',
-                anomalyLevel: 'ELEVATED',
-                priority: 'P1 — URGENT',
-                targetIdentifier: 'http://mygov-tax-refund-au.top',
-                created: 'Yesterday 02:50 PM',
-                status: 'UNDER REVIEW',
-                radar: { identity: 77, financial: 71, device: 83, network: 89, behaviour: 81, communication: 94 },
-                fingerprint: { title: 'myGov ATO Refund Phishing', match: '86%', tags: ['Government Brand Misuse', 'TFN Harvester'] },
-                whyFlagged: [{ title: 'myGov Brand Misuse', severity: 'HIGH', evidence: 'Harvesting myGov passwords, TFN, and banking details.', explanation: 'Credential harvesting portal.' }],
-                timeline: [{ time: '02:50 PM', title: 'NASC Feed Match', desc: 'Indexed in Australian threat feed.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'myGov-tax-refund-au.top', type: 'phone', risk: 'high', details: 'Active Phish Site' }],
-                graphEdges: [],
-                recommendedActions: ['Notify Australian Cyber Security Centre (ACSC).']
-            },
-            {
                 id: 'TG-AU-10492',
                 threatLevel: 'SUSPICIOUS',
-                threatType: 'MARKETPLACE SCAM',
+                threatType: 'Marketplace Scam',
                 confidence: '81%',
                 evidenceStrength: 'MEDIUM',
                 patternMatch: '73%',
                 anomalyLevel: 'ELEVATED',
                 priority: 'P2 — INVESTIGATE',
                 targetIdentifier: '+61 400 123 456',
+                previousReportsCount: 2,
+                connectedEntitiesCount: 4,
                 created: '3 days ago',
                 status: 'OPEN',
+                riskFactors: { previousReports: 15, recentActivity: 15, knownPattern: 15, linkedEntities: 10, strongEvidence: 5 },
                 radar: { identity: 52, financial: 67, device: 57, network: 47, behaviour: 76, communication: 67 },
                 fingerprint: { title: 'Gumtree Puppy Purchase Fraud', match: '73%', tags: ['Fake Deposit Request', 'PayID Transfer'] },
                 whyFlagged: [{ title: 'Non-Delivery Puppy Scam', severity: 'MEDIUM', evidence: 'Buyer deposited A$ 1,500 for non-existent pet.', explanation: 'Advance deposit scam.' }],
@@ -899,35 +973,64 @@ const countrySystems = {
             {
                 id: 'TG-AU-74920',
                 threatLevel: 'GUARDED',
-                threatType: 'INVESTMENT SCAM',
+                threatType: 'Investment Scam',
                 confidence: '74%',
                 evidenceStrength: 'MODERATE',
                 patternMatch: '64%',
                 anomalyLevel: 'MODERATE',
                 priority: 'P3 — MONITOR',
-                targetIdentifier: 'aus-crypto-returns.com.au',
+                targetIdentifier: '+61 412 000 111',
+                previousReportsCount: 1,
+                connectedEntitiesCount: 2,
                 created: '4 days ago',
                 status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 10, recentActivity: 10, knownPattern: 10, linkedEntities: 5, strongEvidence: 5 },
                 radar: { identity: 42, financial: 57, device: 42, network: 72, behaviour: 62, communication: 52 },
                 fingerprint: { title: 'Unregulated Wealth Advisor', match: '64%', tags: ['ASIC AFSL Missing', 'High Yield Claim'] },
                 whyFlagged: [{ title: 'No ASIC AFSL License', severity: 'MEDIUM', evidence: 'No Australian Financial Services License listed.', explanation: 'Unlicensed financial advice.' }],
                 timeline: [{ time: '03:10 PM', title: 'ASIC Search', desc: 'No AFSL record found.', threat: 'warn' }],
-                graphNodes: [{ id: 'n1', label: 'aus-crypto-returns.com.au', type: 'phone', risk: 'guarded', details: 'Unlicensed portal' }],
+                graphNodes: [{ id: 'n1', label: '+61 412 000 111', type: 'phone', risk: 'guarded', details: 'Unlicensed portal' }],
                 graphEdges: [],
                 recommendedActions: ['Check against ASIC scam alert register.']
             },
             {
+                id: 'TG-AU-82910',
+                threatLevel: 'HIGH RISK',
+                threatType: 'Phishing',
+                confidence: '90%',
+                evidenceStrength: 'STRONG',
+                patternMatch: '86%',
+                anomalyLevel: 'ELEVATED',
+                priority: 'P1 — URGENT',
+                targetIdentifier: 'http://mygov-tax-refund-au.top',
+                previousReportsCount: 3,
+                connectedEntitiesCount: 5,
+                created: 'Yesterday 02:50 PM',
+                status: 'UNDER REVIEW',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 20, linkedEntities: 10, strongEvidence: 10 },
+                radar: { identity: 77, financial: 71, device: 83, network: 89, behaviour: 81, communication: 94 },
+                fingerprint: { title: 'myGov ATO Refund Phishing', match: '86%', tags: ['Government Brand Misuse', 'TFN Harvester'] },
+                whyFlagged: [{ title: 'myGov Brand Misuse', severity: 'HIGH', evidence: 'Harvesting myGov passwords, TFN, and banking details.', explanation: 'Credential harvesting portal.' }],
+                timeline: [{ time: '02:50 PM', title: 'NASC Feed Match', desc: 'Indexed in Australian threat feed.', threat: 'warn' }],
+                graphNodes: [{ id: 'n1', label: 'myGov-tax-refund-au.top', type: 'phone', risk: 'high', details: 'Active Phish Site' }],
+                graphEdges: [],
+                recommendedActions: ['Notify Australian Cyber Security Centre (ACSC).']
+            },
+            {
                 id: 'TG-AU-58291',
                 threatLevel: 'CRITICAL THREAT',
-                threatType: 'COORDINATED FRAUD PATTERN',
+                threatType: 'Coordinated Fraud',
                 confidence: '97%',
                 evidenceStrength: 'STRONG',
                 patternMatch: '95%',
                 anomalyLevel: 'SEVERE',
                 priority: 'P0 — IMMEDIATE',
                 targetIdentifier: '082-001 / 88102941',
+                previousReportsCount: 5,
+                connectedEntitiesCount: 12,
                 created: '7 days ago',
                 status: 'ESCALATED',
+                riskFactors: { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 20, strongEvidence: 10 },
                 radar: { identity: 94, financial: 98, device: 89, network: 87, behaviour: 95, communication: 81 },
                 fingerprint: { title: 'National PayID Laundering Ring', match: '95%', tags: ['Multi-State PayID Layering', 'Crypto ATM Cashout'] },
                 whyFlagged: [{ title: 'Multi-State PayID Layering', severity: 'CRITICAL', evidence: 'A$ 2,400,000 moved across 12 BSB accounts.', explanation: 'Coordinated laundering ring.' }],
@@ -941,7 +1044,7 @@ const countrySystems = {
 };
 
 // --------------------------------------------------------------------------
-// 2. Application State & Storage
+// 2. Application State & Ledger
 // --------------------------------------------------------------------------
 let state = {
     currentCountry: 'pakistan',
@@ -956,12 +1059,15 @@ let state = {
     },
     reducedMotion: false,
     glowIntensity: 'high',
-    notifications: [
-        { id: 1, type: 'critical', text: 'New P0 Critical Case TG-PK-20491 initiated in Pakistan Sector.', time: '10m ago', read: false },
-        { id: 2, type: 'high', text: 'Graph Engine identified 4 linked mule accounts for Case TG-UK-58210.', time: '1h ago', read: false },
+    syntheticNotifications: [
+        { id: 1, type: 'critical', text: 'New P0 Critical Case TG-PK-20491 initiated in Pakistan Sector.', time: '10m ago', read: false, caseId: 'TG-PK-20491' },
+        { id: 2, type: 'high', text: 'Graph Engine identified 4 linked mule accounts for Case TG-UK-58210.', time: '1h ago', read: false, caseId: 'TG-UK-58210' },
         { id: 3, type: 'medium', text: 'New phishing portal submitted to scam scanner queue.', time: '2h ago', read: true }
     ],
-    submittedReports: []
+    syntheticReports: [
+        { id: 'RPT-PK-839201', country: 'Pakistan', countryCode: 'PK', category: 'Payment Fraud', target: '+92 300 1112233', date: 'Today 08:30 AM', status: 'DEMO QUEUED', risk: 'HIGH RISK', description: 'Unauthorized transfer requested via mobile app.' },
+        { id: 'RPT-UK-519204', country: 'United Kingdom', countryCode: 'UK', category: 'Phishing', target: 'http://hmrc-tax-rebate-uk.top', date: 'Yesterday', status: 'DEMO QUEUED', risk: 'CRITICAL', description: 'HMRC Tax rebate phishing SMS.' }
+    ]
 };
 
 // --------------------------------------------------------------------------
@@ -987,6 +1093,7 @@ function initApp() {
     // Initial Render
     switchCountry(state.currentCountry, false);
     switchView(state.activeView);
+    renderSubmittedReportsTable();
 }
 
 function loadStateFromStorage() {
@@ -1000,7 +1107,7 @@ function loadStateFromStorage() {
 }
 
 // --------------------------------------------------------------------------
-// 4. Country Switching & Dynamic UI Rendering (CRITICAL)
+// 4. Country Switching & Dynamic UI Rendering
 // --------------------------------------------------------------------------
 function switchCountry(countryKey, notify = true) {
     if (!countrySystems[countryKey]) return;
@@ -1019,7 +1126,6 @@ function switchCountry(countryKey, notify = true) {
     if (flagEl) flagEl.textContent = sys.flag;
     if (nameEl) nameEl.textContent = sys.countryName;
 
-    // Update Dropdown Active states
     document.querySelectorAll('.country-option').forEach(opt => {
         if (opt.dataset.country === countryKey) {
             opt.classList.add('active');
@@ -1044,25 +1150,18 @@ function switchCountry(countryKey, notify = true) {
     if (sbAuth) sbAuth.textContent = sys.authorityName;
     if (sbBadge) sbBadge.textContent = sys.demoCases.length;
 
-    // 4. Update Dashboard Elements
+    // 4. Update Dashboard Header & Stats
     const dhbFlag = document.getElementById('dhb-flag');
     const dhbCountry = document.getElementById('dhb-country');
     if (dhbFlag) dhbFlag.textContent = sys.flag;
     if (dhbCountry) dhbCountry.textContent = sys.countryName + ' Regional Sector';
 
-    const statThreat = document.getElementById('stat-threat-level');
-    const statCases = document.getElementById('stat-active-cases');
-    const statEntities = document.getElementById('stat-suspicious-entities');
-    const statReports = document.getElementById('stat-reports-today');
-    if (statThreat) statThreat.textContent = sys.stats.threatLevel;
-    if (statCases) statCases.textContent = sys.stats.activeCases + ' Cases';
-    if (statEntities) statEntities.textContent = sys.stats.suspiciousEntities + ' Entities';
-    if (statReports) statReports.textContent = sys.stats.reportsToday + ' Reports';
+    renderDashboardStats();
 
     const tableLabel = document.getElementById('cases-table-country-label');
     if (tableLabel) tableLabel.textContent = `Showing synthetic records for ${sys.countryName}`;
 
-    // 5. Update Scanner UI
+    // 5. Update Scanner UI & Samples
     const scannerCountryBadge = document.getElementById('scanner-country-badge');
     if (scannerCountryBadge) scannerCountryBadge.textContent = `SECTOR: ${sys.countryName.toUpperCase()}`;
     renderScannerSamples(sys);
@@ -1081,6 +1180,7 @@ function switchCountry(countryKey, notify = true) {
     renderDashboard();
     renderCaseSelector();
     renderCaseDetail(state.currentCaseId);
+    renderSubmittedReportsTable();
 
     if (notify) {
         showNotificationToast(`Country sector changed to ${sys.flag} ${sys.countryName}`);
@@ -1088,13 +1188,66 @@ function switchCountry(countryKey, notify = true) {
 }
 
 // --------------------------------------------------------------------------
-// 5. Dashboard View Rendering
+// 5. Dashboard View Rendering & Dynamic Calculations
 // --------------------------------------------------------------------------
+function calculateDashboardStats(countryKey) {
+    const sys = countrySystems[countryKey || state.currentCountry];
+    if (!sys) return { threatLevel: 'GUARDED', activeCases: 0, suspiciousEntities: 0, reportsToday: 0 };
+    
+    const cases = sys.demoCases || [];
+    const activeCasesCount = cases.length;
+    
+    const suspiciousEntitiesCount = cases.reduce((acc, c) => acc + (c.connectedEntitiesCount || (c.graphNodes ? c.graphNodes.length : 4)), 0);
+    
+    const sessionReportsCount = state.syntheticReports.filter(r => 
+        r.countryCode === sys.code || (r.country && r.country.toLowerCase() === sys.countryName.toLowerCase())
+    ).length;
+    const baseReports = (sys.stats && sys.stats.reportsToday) ? sys.stats.reportsToday : 18;
+    const reportsTodayCount = baseReports + sessionReportsCount;
+    
+    const hasCritical = cases.some(c => c.threatLevel.includes('CRITICAL') || c.priority.includes('P0'));
+    const hasHigh = cases.some(c => c.threatLevel.includes('HIGH') || c.priority.includes('P1'));
+    let threatLevel = 'GUARDED';
+    if (hasCritical) threatLevel = 'CRITICAL THREAT';
+    else if (hasHigh) threatLevel = 'HIGH RISK';
+
+    return {
+        threatLevel,
+        activeCases: activeCasesCount,
+        suspiciousEntities: suspiciousEntitiesCount,
+        reportsToday: reportsTodayCount
+    };
+}
+
+function renderDashboardStats() {
+    const sys = countrySystems[state.currentCountry];
+    if (!sys) return;
+
+    const stats = calculateDashboardStats(state.currentCountry);
+
+    const statThreat = document.getElementById('stat-threat-level');
+    const statCases = document.getElementById('stat-active-cases');
+    const statEntities = document.getElementById('stat-suspicious-entities');
+    const statReports = document.getElementById('stat-reports-today');
+
+    if (statThreat) statThreat.textContent = stats.threatLevel;
+    if (statCases) statCases.textContent = stats.activeCases + ' Cases';
+    if (statEntities) statEntities.textContent = stats.suspiciousEntities + ' Entities';
+    if (statReports) statReports.textContent = stats.reportsToday + ' Reports';
+
+    const sbBadge = document.getElementById('sidebar-cases-badge');
+    if (sbBadge) sbBadge.textContent = stats.activeCases;
+
+    const notifCount = document.getElementById('notification-count');
+    const unreadCount = state.syntheticNotifications.filter(n => !n.read).length;
+    if (notifCount) notifCount.textContent = unreadCount;
+}
+
 function renderDashboard() {
     const sys = countrySystems[state.currentCountry];
     if (!sys || !sys.demoCases.length) return;
 
-    const currentCase = sys.demoCases[0]; // Top case for radar
+    const currentCase = sys.demoCases.find(c => c.id === state.currentCaseId) || sys.demoCases[0];
 
     // Render Threat Radar
     renderRadarSVG('dashboard-radar-svg', currentCase.radar);
@@ -1134,7 +1287,7 @@ function renderDashboard() {
     const tbody = document.getElementById('dashboard-cases-tbody');
     if (tbody) {
         tbody.innerHTML = sys.demoCases.map(c => `
-            <tr>
+            <tr onclick="openCaseDetail('${c.id}')" style="cursor:pointer;">
                 <td><strong class="text-cyan font-mono">${c.id}</strong></td>
                 <td><span class="badge badge-purple">${c.threatType}</span></td>
                 <td><span class="font-mono">${c.targetIdentifier}</span></td>
@@ -1143,7 +1296,7 @@ function renderDashboard() {
                 <td><span class="font-mono text-cyan">${c.patternMatch}</span></td>
                 <td><span class="badge badge-outline">${c.status}</span></td>
                 <td>
-                    <button class="btn btn-secondary btn-sm" onclick="openCaseDetail('${c.id}')">
+                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openCaseDetail('${c.id}')">
                         <i class="fa-solid fa-folder-open"></i> Inspect
                     </button>
                 </td>
@@ -1160,7 +1313,7 @@ function getThreatBadgeClass(level) {
 }
 
 // --------------------------------------------------------------------------
-// 6. Case Detail & Tabs Rendering
+// 6. Case Detail & Dynamic Tabs Rendering
 // --------------------------------------------------------------------------
 function renderCaseSelector() {
     const sys = countrySystems[state.currentCountry];
@@ -1178,6 +1331,7 @@ function openCaseDetail(caseId) {
     state.currentCaseId = caseId;
     renderCaseSelector();
     renderCaseDetail(caseId);
+    renderDashboard();
     switchView('cases');
 }
 
@@ -1221,7 +1375,7 @@ function renderCaseDetail(caseId) {
                     ${caseObj.fingerprint.tags.map(t => `<span class="fp-chip">${t}</span>`).join('')}
                 </div>
                 <div class="margin-top-md text-small text-muted">
-                    Target Identifier: <strong class="text-cyan font-mono">${caseObj.targetIdentifier}</strong>
+                    Target Identifier: <strong class="text-cyan font-mono">${caseObj.targetIdentifier}</strong> &bull; Priority: ${caseObj.priority}
                 </div>
             </div>
         `;
@@ -1269,7 +1423,7 @@ function renderCaseDetail(caseId) {
                     <strong>${i + 1}. ${act}</strong>
                 </div>
                 <div class="si-control">
-                    <button class="btn btn-secondary btn-sm" onclick="this.classList.toggle('btn-primary')">
+                    <button class="btn btn-secondary btn-sm" onclick="this.classList.toggle('btn-primary'); showNotificationToast('Action logged in synthetic ledger.');">
                         <i class="fa-solid fa-check"></i> Execute
                     </button>
                 </div>
@@ -1298,7 +1452,6 @@ function renderRadarSVG(svgId, radarData) {
     const numAxes = categories.length;
     const angleStep = (Math.PI * 2) / numAxes;
 
-    // Build grid polygons (20%, 40%, 60%, 80%, 100%)
     let gridHTML = '';
     [0.2, 0.4, 0.6, 0.8, 1.0].forEach(level => {
         const points = [];
@@ -1312,7 +1465,6 @@ function renderRadarSVG(svgId, radarData) {
         gridHTML += `<polygon points="${points.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
     });
 
-    // Axis lines and labels
     let axisHTML = '';
     let polygonPoints = [];
     categories.forEach((cat, i) => {
@@ -1322,27 +1474,24 @@ function renderRadarSVG(svgId, radarData) {
         
         axisHTML += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
 
-        // Calculate data point
         const val = (radarData[cat.key] || 50) / 100;
         const dx = cx + radius * val * Math.cos(angle);
         const dy = cy + radius * val * Math.sin(angle);
         polygonPoints.push(`${dx},${dy}`);
 
-        // Labels
         const lx = cx + (radius + 22) * Math.cos(angle);
         const ly = cy + (radius + 14) * Math.sin(angle);
         axisHTML += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="#94a3b8" font-size="10" font-weight="600">${cat.label}</text>`;
     });
 
-    // Data polygon & vertices
     const polygonHTML = `
         <defs>
-            <linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="radarGrad_${svgId}" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.45"/>
                 <stop offset="100%" stop-color="#ff003c" stop-opacity="0.45"/>
             </linearGradient>
         </defs>
-        <polygon points="${polygonPoints.join(' ')}" fill="url(#radarGrad)" stroke="#00f2fe" stroke-width="2"/>
+        <polygon points="${polygonPoints.join(' ')}" fill="url(#radarGrad_${svgId})" stroke="#00f2fe" stroke-width="2"/>
     `;
 
     let dotsHTML = '';
@@ -1368,7 +1517,7 @@ function renderRadarLegend(containerId, radarData) {
 }
 
 // --------------------------------------------------------------------------
-// 8. Interactive Entity Relationship Graph Renderer (SVG)
+// 8. Dynamic SVG Entity Relationship Graph Renderer
 // --------------------------------------------------------------------------
 function renderEntityGraph(nodes, edges) {
     const svg = document.getElementById('entity-relationship-svg');
@@ -1382,7 +1531,6 @@ function renderEntityGraph(nodes, edges) {
     const width = svg.clientWidth || 600;
     const height = svg.clientHeight || 480;
 
-    // Calculate circular layout position for nodes
     const cx = width / 2;
     const cy = height / 2;
     const radius = Math.min(width, height) * 0.35;
@@ -1396,7 +1544,6 @@ function renderEntityGraph(nodes, edges) {
         };
     });
 
-    // Build Edges
     let edgesHTML = '';
     edges.forEach(edge => {
         const source = positionedNodes.find(n => n.id === edge.from);
@@ -1411,7 +1558,6 @@ function renderEntityGraph(nodes, edges) {
         }
     });
 
-    // Build Nodes
     let nodesHTML = '';
     positionedNodes.forEach(node => {
         nodesHTML += `
@@ -1424,8 +1570,6 @@ function renderEntityGraph(nodes, edges) {
     });
 
     svg.innerHTML = `<g>${edgesHTML}${nodesHTML}</g>`;
-    
-    // Store current positioned nodes globally for click inspection
     window.currentGraphNodes = positionedNodes;
 }
 
@@ -1474,7 +1618,49 @@ function inspectGraphNode(nodeId) {
 }
 
 // --------------------------------------------------------------------------
-// 9. Scam Checker Scanner Terminal Engine
+// 9. Rule-Based Synthetic Risk Engine
+// --------------------------------------------------------------------------
+function calculateSyntheticRiskScore(caseObj) {
+    if (!caseObj) {
+        return {
+            totalScore: 0,
+            level: 'INSUFFICIENT DATA',
+            badgeClass: 'guarded',
+            breakdown: [
+                { factor: 'Previous Reports Index', points: 0, desc: 'No historical scam reports' },
+                { factor: 'Recent Activity Signals', points: 0, desc: 'No recent transaction anomalies' },
+                { factor: 'Known Fraud Pattern', points: 0, desc: 'No pattern match' },
+                { factor: 'Linked Entities Degree', points: 0, desc: '0 connected graph nodes' }
+            ]
+        };
+    }
+
+    const rf = caseObj.riskFactors || { previousReports: 25, recentActivity: 20, knownPattern: 25, linkedEntities: 15, strongEvidence: 10 };
+    const totalScore = Math.min(100, (rf.previousReports || 0) + (rf.recentActivity || 0) + (rf.knownPattern || 0) + (rf.linkedEntities || 0) + (rf.strongEvidence || 0));
+
+    let level = 'LOW';
+    let badgeClass = 'guarded';
+    if (totalScore >= 80) { level = 'CRITICAL THREAT'; badgeClass = 'critical'; }
+    else if (totalScore >= 60) { level = 'HIGH RISK'; badgeClass = 'high'; }
+    else if (totalScore >= 40) { level = 'SUSPICIOUS'; badgeClass = 'suspicious'; }
+    else if (totalScore >= 20) { level = 'GUARDED'; badgeClass = 'guarded'; }
+
+    return {
+        totalScore,
+        level,
+        badgeClass,
+        breakdown: [
+            { factor: 'Previous Reports Index', points: rf.previousReports || 0, desc: `${caseObj.previousReportsCount || 3} historical reports linked` },
+            { factor: 'Recent Activity Velocity', points: rf.recentActivity || 0, desc: 'High velocity transfer sequence detected' },
+            { factor: 'Known Fraud Pattern', points: rf.knownPattern || 0, desc: caseObj.fingerprint ? caseObj.fingerprint.title : 'Pattern trigger' },
+            { factor: 'Linked Entities Graph', points: rf.linkedEntities || 0, desc: `${caseObj.connectedEntitiesCount || 7} connected graph nodes` },
+            { factor: 'Evidence Strength', points: rf.strongEvidence || 0, desc: `Evidence status: ${caseObj.evidenceStrength}` }
+        ]
+    };
+}
+
+// --------------------------------------------------------------------------
+// 10. Phone / Entity Checker Scanner Terminal Engine
 // --------------------------------------------------------------------------
 function bindScannerEvents() {
     const btn = document.getElementById('run-scanner-btn');
@@ -1502,8 +1688,8 @@ function loadScannerSample(type, val) {
 }
 
 function runThreatScanner() {
-    const val = document.getElementById('scanner-query-val').value.trim();
-    if (!val) {
+    const queryVal = document.getElementById('scanner-query-val').value.trim();
+    if (!queryVal) {
         showNotificationToast('Please enter a value to scan.');
         return;
     }
@@ -1522,7 +1708,7 @@ function runThreatScanner() {
     const now = () => new Date().toLocaleTimeString();
 
     const steps = [
-        { text: `[${now()}] Initializing synthetic analysis for target: ${val}`, class: 'tl-text' },
+        { text: `[${now()}] Initializing synthetic analysis for target: ${queryVal}`, class: 'tl-text' },
         { text: `[${now()}] Querying ${sys.countryName} sector synthetic threat graph...`, class: 'tl-text' },
         { text: `[${now()}] Pattern Matching: Checking velocity & anomaly risk vectors...`, class: 'tl-warn' },
         { text: `[${now()}] Degree Centrality: Evaluating connected node linkages...`, class: 'tl-text' },
@@ -1541,52 +1727,158 @@ function runThreatScanner() {
         } else {
             clearInterval(interval);
             if (status) status.textContent = 'SCAN COMPLETE';
-            displayScannerResults(val);
+            displayScannerResults(queryVal);
         }
-    }, state.reducedMotion ? 50 : 400);
+    }, state.reducedMotion ? 50 : 350);
 }
 
-function displayScannerResults(val) {
+function normalizePhoneNumber(phone) {
+    if (!phone) return '';
+    let cleaned = phone.replace(/[^\d+]/g, '');
+    
+    if (cleaned.startsWith('03') && state.currentCountry === 'pakistan') {
+        cleaned = '+92' + cleaned.substring(1);
+    } else if (cleaned.startsWith('923') && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    } else if (cleaned.startsWith('07') && state.currentCountry === 'uk') {
+        cleaned = '+44' + cleaned.substring(1);
+    } else if (cleaned.startsWith('447') && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    } else if (cleaned.startsWith('05') && state.currentCountry === 'uae') {
+        cleaned = '+971' + cleaned.substring(1);
+    } else if (cleaned.startsWith('9715') && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    } else if (cleaned.startsWith('04') && state.currentCountry === 'australia') {
+        cleaned = '+61' + cleaned.substring(1);
+    } else if (cleaned.startsWith('614') && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    }
+    return cleaned;
+}
+
+function displayScannerResults(queryVal) {
     const resultCard = document.getElementById('scanner-result-card');
     if (!resultCard) return;
 
     const sys = countrySystems[state.currentCountry];
-    const isHighRisk = val.includes('300') || val.includes('42101') || val.includes('7700') || val.includes('top') || val.includes('555');
+    const normQuery = normalizePhoneNumber(queryVal).toLowerCase();
+    const cleanQuery = queryVal.replace(/[\s\-\(\)]/g, '').toLowerCase();
 
-    const threatLevel = isHighRisk ? 'CRITICAL THREAT' : 'GUARDED / LOW RISK';
-    const confidence = isHighRisk ? '94%' : '82%';
-    const threatType = isHighRisk ? 'PHISHING / ACCOUNT TAKEOVER' : 'INFORMATIONAL';
+    // Match against cases or graph nodes
+    const caseMatch = sys.demoCases.find(c => {
+        const normTarget = normalizePhoneNumber(c.targetIdentifier).toLowerCase();
+        const cleanTarget = c.targetIdentifier.replace(/[\s\-\(\)]/g, '').toLowerCase();
+        return (normQuery && normTarget && (normQuery === normTarget || normQuery.includes(normTarget) || normTarget.includes(normQuery))) ||
+               cleanQuery.includes(cleanTarget) || cleanTarget.includes(cleanQuery) ||
+               (c.graphNodes && c.graphNodes.some(n => n.label.replace(/[\s\-\(\)]/g, '').toLowerCase().includes(cleanQuery)));
+    });
 
-    resultCard.innerHTML = `
-        <div class="card-header">
-            <div class="card-title">
-                <i class="fa-solid fa-file-shield text-cyan"></i>
-                <h3>Synthetic Threat Inspection Report</h3>
+    if (caseMatch) {
+        state.currentCaseId = caseMatch.id;
+        renderDashboard();
+        renderCaseSelector();
+        renderCaseDetail(caseMatch.id);
+
+        const risk = calculateSyntheticRiskScore(caseMatch);
+        resultCard.innerHTML = `
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa-solid fa-shield-cat text-cyan"></i>
+                    <h3>SYNTHETIC MATCH FOUND &mdash; ${risk.level}</h3>
+                </div>
+                <span class="threat-badge ${risk.badgeClass}">${risk.level}</span>
             </div>
-            <span class="threat-badge ${isHighRisk ? 'critical' : 'guarded'}">${threatLevel}</span>
-        </div>
-        <div class="card-body">
-            <div class="multidim-scores margin-bottom-md">
-                <div class="score-pill"><span class="sp-label">Queried Target</span><span class="sp-val font-mono text-cyan">${val}</span></div>
-                <div class="score-pill"><span class="sp-label">Sector</span><span class="sp-val text-primary">${sys.countryName}</span></div>
-                <div class="score-pill"><span class="sp-label">AI Confidence</span><span class="sp-val text-success">${confidence}</span></div>
-                <div class="score-pill"><span class="sp-label">Threat Classification</span><span class="sp-val text-purple">${threatType}</span></div>
-            </div>
+            <div class="card-body">
+                <div class="multidim-scores margin-bottom-md">
+                    <div class="score-pill"><span class="sp-label">Queried Target</span><span class="sp-val font-mono text-cyan">${queryVal}</span></div>
+                    <div class="score-pill"><span class="sp-label">Sector</span><span class="sp-val text-primary">${sys.countryName}</span></div>
+                    <div class="score-pill"><span class="sp-label">Linked Case</span><span class="sp-val text-purple font-mono">${caseMatch.id}</span></div>
+                    <div class="score-pill"><span class="sp-label">Threat Category</span><span class="sp-val text-warning">${caseMatch.threatType}</span></div>
+                </div>
 
-            <div class="legal-disclaimer-box">
-                <i class="fa-solid fa-flask disclaimer-icon"></i>
-                <div class="disclaimer-text">
-                    <strong>DEMO SYNTHETIC ASSESSMENT RESULT</strong>
-                    <p>This result was generated using frontend synthetic rules for demonstration purposes. It does not reflect live access to government or telecom databases.</p>
+                <div class="multidim-scores margin-bottom-md">
+                    <div class="score-pill"><span class="sp-label">Previous Reports</span><span class="sp-val text-danger">${caseMatch.previousReportsCount || 3}</span></div>
+                    <div class="score-pill"><span class="sp-label">Connected Entities</span><span class="sp-val text-cyan">${caseObjEntities(caseMatch)}</span></div>
+                    <div class="score-pill"><span class="sp-label">Evidence Strength</span><span class="sp-val text-success">${caseMatch.evidenceStrength}</span></div>
+                    <div class="score-pill"><span class="sp-label">Priority</span><span class="sp-val text-danger">${caseMatch.priority}</span></div>
+                </div>
+
+                <!-- Synthetic Risk Engine Points Breakdown -->
+                <div class="glass-card margin-bottom-md" style="background: rgba(0, 0, 0, 0.4); padding: 16px;">
+                    <h4 class="margin-bottom-xs text-cyan"><i class="fa-solid fa-calculator"></i> Synthetic Rule-Based Risk Assessment: ${risk.totalScore} / 100 (${risk.level})</h4>
+                    <p class="text-small text-muted margin-bottom-sm">Score calculated transparently using synthetic risk vector weights:</p>
+                    <div class="multidim-scores">
+                        ${risk.breakdown.map(b => `
+                            <div class="score-pill">
+                                <span class="sp-label">${b.factor}</span>
+                                <span class="sp-val text-cyan">+${b.points}</span>
+                                <span class="text-small text-muted">${b.desc}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Evidence Snippet -->
+                <div class="margin-bottom-md">
+                    <h4 class="margin-bottom-xs"><i class="fa-solid fa-fingerprint text-purple"></i> Active Fingerprint Pattern</h4>
+                    <div class="fingerprint-card">
+                        <div class="fp-header">
+                            <span class="fp-title">${caseMatch.fingerprint.title}</span>
+                            <span class="fp-match">${caseMatch.fingerprint.match} Match</span>
+                        </div>
+                        <div class="fp-pattern-formula margin-top-xs">
+                            ${caseMatch.fingerprint.tags.map(t => `<span class="fp-chip">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-end margin-top-md">
+                    <button class="btn btn-primary" onclick="openCaseDetail('${caseMatch.id}')">
+                        <i class="fa-solid fa-folder-open"></i> INSPECT FULL CASE FILE (${caseMatch.id})
+                    </button>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        // NO MATCH FOUND RESULT
+        resultCard.innerHTML = `
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa-solid fa-circle-question text-warning"></i>
+                    <h3>NO KNOWN SYNTHETIC MATCH FOUND</h3>
+                </div>
+                <span class="threat-badge guarded">INSUFFICIENT DATA</span>
+            </div>
+            <div class="card-body">
+                <div class="multidim-scores margin-bottom-md">
+                    <div class="score-pill"><span class="sp-label">Queried Target</span><span class="sp-val font-mono text-cyan">${queryVal}</span></div>
+                    <div class="score-pill"><span class="sp-label">Sector</span><span class="sp-val text-primary">${sys.countryName}</span></div>
+                    <div class="score-pill"><span class="sp-label">Database Match</span><span class="sp-val text-muted">0 Records Found</span></div>
+                    <div class="score-pill"><span class="sp-label">Risk Status</span><span class="sp-val text-warning">INSUFFICIENT DATA</span></div>
+                </div>
+
+                <div class="legal-disclaimer-box margin-top-md" style="border-color: var(--threat-suspicious); background: rgba(255, 183, 0, 0.08);">
+                    <i class="fa-solid fa-triangle-exclamation disclaimer-icon" style="color: var(--threat-suspicious);"></i>
+                    <div class="disclaimer-text">
+                        <strong style="color: var(--threat-suspicious);">⚠️ NO MATCH FOUND &mdash; INSUFFICIENT DATA</strong>
+                        <p style="font-weight: 600;">No known synthetic record found.</p>
+                        <p style="margin-top: 4px; color: var(--threat-suspicious); font-weight: 700;">Insufficient synthetic data. No conclusion about safety can be made.</p>
+                        <p class="text-small margin-top-xs">No synthetic fraud reports or linked cases were found in the <strong>${sys.countryName}</strong> sector for <code>${queryVal}</code>. Unindexed SIMs or unreported numbers may still be active.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     resultCard.classList.remove('hidden');
 }
 
+function caseObjEntities(c) {
+    return c.connectedEntitiesCount || (c.graphNodes ? c.graphNodes.length : 5);
+}
+
 // --------------------------------------------------------------------------
-// 10. Message Analyzer Engine
+// 11. Message Analyzer Engine
 // --------------------------------------------------------------------------
 function bindMessageAnalyzerEvents() {
     const btn = document.getElementById('analyze-msg-btn');
@@ -1615,42 +1907,68 @@ function analyzeMessage() {
     const outputBox = document.getElementById('msg-analysis-output-container');
     if (!text || !outputBox) return;
 
-    // Highlight Regex Rules
+    const urgencyMatches = text.match(/(urgent|immediately|locked|blocked|within 24 hours|suspended|now|critical|emergency)/gi) || [];
+    const threatMatches = text.match(/(blocked|suspended|penalty|police|legal action|court|arrest|fine)/gi) || [];
+    const otpMatches = text.match(/(otp|one-time password|verification code|pin|sms code|secret code)/gi) || [];
+    const credMatches = text.match(/(password|bank account|cnic|ssn|ni number|login|card details|cvv|credentials)/gi) || [];
+    const linkMatches = text.match(/(https?:\/\/[^\s]+|\.top|\.xyz|\.info|bit\.ly|tinyurl)/gi) || [];
+    const impMatches = text.match(/(nadra|fia|bank|hmrc|irs|cra|mygov|police|post|lottery|reward)/gi) || [];
+
+    const urgencyScore = Math.min(30, urgencyMatches.length * 15);
+    const threatScore = Math.min(20, threatMatches.length * 10);
+    const credScore = Math.min(25, (otpMatches.length + credMatches.length) * 15);
+    const linkScore = Math.min(25, linkMatches.length * 20);
+
+    const totalScore = Math.min(100, urgencyScore + threatScore + credScore + linkScore + (impMatches.length ? 15 : 0));
+
+    let riskLevel = 'LOW SOCIAL ENGINEERING RISK';
+    let badgeClass = 'guarded';
+    if (totalScore >= 75) { riskLevel = 'CRITICAL SOCIAL ENGINEERING RISK'; badgeClass = 'critical'; }
+    else if (totalScore >= 50) { riskLevel = 'HIGH SOCIAL ENGINEERING RISK'; badgeClass = 'high'; }
+    else if (totalScore >= 30) { riskLevel = 'SUSPICIOUS / ELEVATED RISK'; badgeClass = 'suspicious'; }
+
     let annotated = text;
-    let urgencyCount = 0;
-    let linkCount = 0;
-    let impCount = 0;
+    annotated = annotated.replace(/(urgent|immediately|locked|blocked|within 24 hours|suspended|now|critical|emergency)/gi, m => `<mark class="marker-urgency">${m}</mark>`);
+    annotated = annotated.replace(/(https?:\/\/[^\s]+|\.top|\.xyz|\.info|bit\.ly|tinyurl)/gi, m => `<mark class="marker-link">${m}</mark>`);
+    annotated = annotated.replace(/(nadra|fia|bank|hmrc|irs|cra|mygov|police|post|lottery|reward)/gi, m => `<mark class="marker-impersonation">${m}</mark>`);
 
-    const urgencyRegex = /(urgent|immediately|locked|blocked|within 24 hours|suspended|now)/gi;
-    const linkRegex = /(https?:\/\/[^\s]+|\.top|\.xyz|\.info)/gi;
-    const impRegex = /(bank|nadra|hmrc|irs|police|official|cra|mygov|lottery)/gi;
+    const payMatches = text.match(/(payment|transfer|money|wire|deposit|fee|cash|claim|prize|lottery|rs\.|pkr|gbp|usd|aed)/gi) || [];
 
-    annotated = annotated.replace(urgencyRegex, match => { urgencyCount++; return `<mark class="marker-urgency">${match}</mark>`; });
-    annotated = annotated.replace(linkRegex, match => { linkCount++; return `<mark class="marker-link">${match}</mark>`; });
-    annotated = annotated.replace(impRegex, match => { impCount++; return `<mark class="marker-impersonation">${match}</mark>`; });
-
-    const totalScore = Math.min(100, (urgencyCount * 25) + (linkCount * 35) + (impCount * 30));
-    const riskBadge = totalScore > 60 ? 'CRITICAL SOCIAL ENGINEERING RISK' : 'MODERATE / LOW RISK';
+    const otpLevel = otpMatches.length ? 'HIGH' : 'NONE';
+    const urgencyLevel = urgencyMatches.length >= 2 ? 'HIGH' : (urgencyMatches.length ? 'MEDIUM' : 'NORMAL');
+    const threatLevel = threatMatches.length >= 2 ? 'HIGH' : (threatMatches.length ? 'MEDIUM' : 'NONE');
+    const payLevel = payMatches.length >= 2 ? 'HIGH' : (payMatches.length ? 'MEDIUM' : 'NONE');
+    const impLevel = impMatches.length >= 2 ? 'HIGH' : (impMatches.length ? 'MEDIUM' : 'NONE');
 
     outputBox.innerHTML = `
         <div class="margin-bottom-md">
-            <span class="threat-badge ${totalScore > 60 ? 'critical' : 'guarded'}">${riskBadge} (${totalScore}%)</span>
+            <span class="threat-badge ${badgeClass}">${riskLevel} &mdash; Risk Score: ${totalScore} / 100</span>
         </div>
         
         <div class="annotated-msg-box margin-bottom-md">
             ${annotated}
         </div>
 
-        <div class="multidim-scores">
-            <div class="score-pill"><span class="sp-label">Urgency Signals</span><span class="sp-val text-danger">${urgencyCount}</span></div>
-            <div class="score-pill"><span class="sp-label">Phishing Links</span><span class="sp-val text-cyan">${linkCount}</span></div>
-            <div class="score-pill"><span class="sp-label">Impersonation</span><span class="sp-val text-warning">${impCount}</span></div>
+        <div class="multidim-scores margin-bottom-md">
+            <div class="score-pill"><span class="sp-label">OTP Request</span><span class="sp-val ${otpLevel === 'HIGH' ? 'text-danger' : 'text-muted'}">${otpLevel}</span></div>
+            <div class="score-pill"><span class="sp-label">Urgency</span><span class="sp-val ${urgencyLevel === 'HIGH' ? 'text-danger' : (urgencyLevel === 'MEDIUM' ? 'text-warning' : 'text-cyan')}">${urgencyLevel}</span></div>
+            <div class="score-pill"><span class="sp-label">Threat Language</span><span class="sp-val ${threatLevel === 'HIGH' ? 'text-danger' : (threatLevel === 'MEDIUM' ? 'text-warning' : 'text-muted')}">${threatLevel}</span></div>
+            <div class="score-pill"><span class="sp-label">Payment Request</span><span class="sp-val ${payLevel === 'HIGH' ? 'text-danger' : (payLevel === 'MEDIUM' ? 'text-warning' : 'text-muted')}">${payLevel}</span></div>
+            <div class="score-pill"><span class="sp-label">Impersonation</span><span class="sp-val ${impLevel === 'HIGH' ? 'text-danger' : (impLevel === 'MEDIUM' ? 'text-warning' : 'text-muted')}">${impLevel}</span></div>
+        </div>
+
+        <div class="legal-disclaimer-box">
+            <i class="fa-solid fa-microscope disclaimer-icon"></i>
+            <div class="disclaimer-text">
+                <strong>SYNTHETIC RULE-BASED ASSESSMENT</strong>
+                <p>Calculated transparently using heuristic pattern rules for urgency, link harvesting, payment triggers, and credential extraction vectors.</p>
+            </div>
         </div>
     `;
 }
 
 // --------------------------------------------------------------------------
-// 11. URL Analyzer Engine
+// 12. URL Analyzer Engine
 // --------------------------------------------------------------------------
 function bindUrlAnalyzerEvents() {
     const btn = document.getElementById('analyze-url-btn');
@@ -1672,31 +1990,74 @@ function analyzeURL() {
     const container = document.getElementById('url-result-container');
     if (!urlVal || !container) return;
 
-    const isPhish = urlVal.includes('.top') || urlVal.includes('.xyz') || urlVal.includes('phish');
-    const score = isPhish ? 88 : 12;
+    const lower = urlVal.toLowerCase();
+    const hasSuspiciousTLD = /\.top|\.xyz|\.info|\.cc|\.tk|\.ga|\.work|\.click|\.site/i.test(lower);
+    const hasBrandKeyword = /bank|nadra|fia|hmrc|irs|cra|mygov|secure|verify|login|account|update|support|crypto/i.test(lower);
+    const isInsecure = lower.startsWith('http://') && !lower.startsWith('https://');
+    const isIP = /^https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i.test(lower);
+    
+    // Subdomains check
+    const domainPart = lower.split('/')[2] || lower.split('/')[0];
+    const subdomains = domainPart.split('.').filter(Boolean);
+    const excessiveSubdomains = subdomains.length > 3;
+
+    // Special characters & length
+    const hasUnusualChars = /[@\_]|%{2,}/.test(lower);
+    const isLongUrl = urlVal.length > 50;
+
+    let score = 5;
+    if (hasSuspiciousTLD) score += 30;
+    if (hasBrandKeyword) score += 20;
+    if (isIP) score += 25;
+    if (excessiveSubdomains) score += 15;
+    if (hasUnusualChars) score += 10;
+    if (isLongUrl) score += 10;
+    if (isInsecure) score += 10;
+
+    score = Math.min(100, score);
+
+    let riskLevel = 'LOW STRUCTURAL RISK';
+    let badgeClass = 'guarded';
+    if (score >= 70) { riskLevel = 'HIGH PHISHING STRUCTURAL RISK'; badgeClass = 'critical'; }
+    else if (score >= 40) { riskLevel = 'ELEVATED SUSPICIOUS DOMAIN'; badgeClass = 'suspicious'; }
 
     container.innerHTML = `
         <div class="card-header">
             <div class="card-title">
                 <i class="fa-solid fa-globe text-cyan"></i>
-                <h3>Domain Structure Telemetry for ${urlVal}</h3>
+                <h3>Synthetic URL Structure & Risk Telemetry</h3>
             </div>
-            <span class="threat-badge ${isPhish ? 'critical' : 'guarded'}">${isPhish ? 'HIGH PHISHING RISK' : 'BENIGN DOMAIN'}</span>
+            <span class="threat-badge ${badgeClass}">${riskLevel} &mdash; Risk Score: ${score} / 100</span>
         </div>
         <div class="card-body">
             <div class="multidim-scores margin-bottom-md">
-                <div class="score-pill"><span class="sp-label">Domain Entropy</span><span class="sp-val font-mono text-cyan">${isPhish ? '4.85 (High)' : '2.10 (Normal)'}</span></div>
-                <div class="score-pill"><span class="sp-label">TLD Reputation</span><span class="sp-val ${isPhish ? 'text-danger' : 'text-success'}">${isPhish ? 'SUSPICIOUS (.top)' : 'TRUSTED'}</span></div>
-                <div class="score-pill"><span class="sp-label">Protocol Safety</span><span class="sp-val text-warning">${urlVal.startsWith('https') ? 'HTTPS OK' : 'HTTP INSECURE'}</span></div>
+                <div class="score-pill"><span class="sp-label">Target URL</span><span class="sp-val font-mono text-cyan">${urlVal}</span></div>
+                <div class="score-pill"><span class="sp-label">Suspicious TLD</span><span class="sp-val ${hasSuspiciousTLD ? 'text-danger' : 'text-success'}">${hasSuspiciousTLD ? 'DETECTED' : 'NORMAL'}</span></div>
+                <div class="score-pill"><span class="sp-label">Excessive Subdomains</span><span class="sp-val ${excessiveSubdomains ? 'text-warning' : 'text-muted'}">${subdomains.length} Levels</span></div>
+                <div class="score-pill"><span class="sp-label">Raw IP URL</span><span class="sp-val ${isIP ? 'text-danger' : 'text-muted'}">${isIP ? 'YES' : 'NO'}</span></div>
             </div>
-            <p class="text-small text-muted"><i class="fa-solid fa-shield"></i> Demo domain structure lookup using synthetic keyword entropy matching.</p>
+
+            <div class="multidim-scores margin-bottom-md">
+                <div class="score-pill"><span class="sp-label">Brand Misuse Keyword</span><span class="sp-val ${hasBrandKeyword ? 'text-warning' : 'text-muted'}">${hasBrandKeyword ? 'DETECTED' : 'NONE'}</span></div>
+                <div class="score-pill"><span class="sp-label">Unusual Characters</span><span class="sp-val ${hasUnusualChars ? 'text-warning' : 'text-muted'}">${hasUnusualChars ? 'DETECTED' : 'CLEAN'}</span></div>
+                <div class="score-pill"><span class="sp-label">URL Length Risk</span><span class="sp-val ${isLongUrl ? 'text-warning' : 'text-muted'}">${urlVal.length} Chars</span></div>
+                <div class="score-pill"><span class="sp-label">Protocol Safety</span><span class="sp-val ${isInsecure ? 'text-danger' : 'text-success'}">${isInsecure ? 'HTTP (INSECURE)' : 'HTTPS'}</span></div>
+            </div>
+
+            <div class="legal-disclaimer-box">
+                <i class="fa-solid fa-flask disclaimer-icon"></i>
+                <div class="disclaimer-text">
+                    <strong>SYNTHETIC URL STRUCTURE & RISK ASSESSMENT</strong>
+                    <p>Calculated using domain entropy rules, TLD risk indices, subdomain depth, and brand typosquatting heuristics. Does NOT perform live malware sandboxing.</p>
+                </div>
+            </div>
         </div>
     `;
     container.classList.remove('hidden');
 }
 
 // --------------------------------------------------------------------------
-// 12. Scam Report Submission Engine
+// 13. Scam Report Submission Engine & Ledger
 // --------------------------------------------------------------------------
 function bindReportFormEvents() {
     const form = document.getElementById('scam-report-form');
@@ -1704,25 +2065,111 @@ function bindReportFormEvents() {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const sys = countrySystems[state.currentCountry];
+            const scamType = document.getElementById('rpt-scam-type').value;
+            const phone = document.getElementById('rpt-phone').value.trim();
+            const email = document.getElementById('rpt-email').value.trim();
+            const account = document.getElementById('rpt-account').value.trim();
+            const url = document.getElementById('rpt-url').value.trim();
+            const desc = document.getElementById('rpt-description').value.trim();
+
             const rand = Math.floor(100000 + Math.random() * 900000);
             const reportId = `RPT-${sys.code}-${rand}`;
+            const targetVal = phone || email || account || url || 'Unspecified Target';
+
+            const newReport = {
+                id: reportId,
+                country: sys.countryName,
+                countryCode: sys.code,
+                category: scamType,
+                target: targetVal,
+                date: 'Just Now',
+                status: 'DEMO QUEUED',
+                risk: 'PENDING REVIEW',
+                description: desc
+            };
+
+            state.syntheticReports.unshift(newReport);
+
+            // Update stats
+            sys.stats.reportsToday += 1;
+            const statReports = document.getElementById('stat-reports-today');
+            if (statReports) statReports.textContent = `${sys.stats.reportsToday} Reports`;
+
+            // Push Notification
+            state.syntheticNotifications.unshift({
+                id: Date.now(),
+                type: 'medium',
+                text: `New Synthetic Report ${reportId} submitted into ${sys.countryName} queue.`,
+                time: 'Just Now',
+                read: false
+            });
+            renderNotifications();
+
+            // Render Submitted Reports Ledger & Update Dashboard Stats
+            renderSubmittedReportsTable();
+            renderDashboardStats();
 
             const successBox = document.getElementById('report-success-alert');
             const successTitle = document.getElementById('rpt-success-id');
-
             if (successTitle) successTitle.textContent = `REPORT SUBMITTED: ${reportId}`;
             if (successBox) successBox.classList.remove('hidden');
 
-            showNotificationToast(`Report ${reportId} submitted to ${sys.countryName} queue.`);
+            showNotificationToast(`Report ${reportId} successfully queued in ${sys.countryName} database.`);
             form.reset();
         });
     }
 }
 
+function renderSubmittedReportsTable() {
+    const tbody = document.getElementById('submitted-reports-tbody');
+    if (!tbody) return;
+
+    if (state.syntheticReports.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No synthetic reports submitted yet.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = state.syntheticReports.map(r => `
+        <tr>
+            <td><strong class="text-cyan font-mono">${r.id}</strong></td>
+            <td><span class="badge badge-outline">${r.country}</span></td>
+            <td><span class="badge badge-purple">${r.category}</span></td>
+            <td><span class="font-mono text-small">${r.target}</span></td>
+            <td><span class="text-small text-muted">${r.date}</span></td>
+            <td><span class="badge badge-cyan">${r.status}</span></td>
+            <td><span class="badge badge-p0">${r.risk}</span></td>
+        </tr>
+    `).join('');
+}
+
 // --------------------------------------------------------------------------
-// 13. UI Events, Navigation SPA & Modals
+// 14. UI Events, Navigation SPA & User Auth
 // --------------------------------------------------------------------------
 function bindHeaderEvents() {
+    // Global Escape Key Listener for Modals, Drawers & Menus
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMobileSidebar();
+            const loginModal = document.getElementById('login-modal');
+            if (loginModal) loginModal.classList.add('hidden');
+            const notifDrawer = document.getElementById('notification-drawer');
+            if (notifDrawer) notifDrawer.classList.add('hidden');
+            const inspector = document.getElementById('graph-node-inspector');
+            if (inspector) inspector.classList.add('hidden');
+            const countryMenu = document.getElementById('country-dropdown-menu');
+            if (countryMenu) countryMenu.classList.add('hidden');
+            const userMenu = document.getElementById('user-profile-menu');
+            if (userMenu) userMenu.classList.add('hidden');
+            const searchDropdown = document.getElementById('search-results-dropdown');
+            if (searchDropdown) searchDropdown.classList.add('hidden');
+        }
+    });
+
+    const logoBtn = document.getElementById('brand-logo-btn');
+    if (logoBtn) {
+        logoBtn.addEventListener('click', () => switchView('dashboard'));
+    }
+
     // Country Selector Dropdown
     const btn = document.getElementById('country-select-btn');
     const menu = document.getElementById('country-dropdown-menu');
@@ -1737,12 +2184,6 @@ function bindHeaderEvents() {
             if (menu) menu.classList.add('hidden');
         });
     });
-
-    // Brand Logo Button
-    const logoBtn = document.getElementById('brand-logo-btn');
-    if (logoBtn) {
-        logoBtn.addEventListener('click', () => switchView('dashboard'));
-    }
 
     // Mobile Sidebar Toggle & Helpers
     const mobToggle = document.getElementById('mobile-sidebar-toggle');
@@ -1762,7 +2203,6 @@ function bindHeaderEvents() {
         });
     }
 
-    // Global document listener to close sidebar when tapping outside
     document.addEventListener('click', (e) => {
         const sidebar = document.getElementById('app-sidebar');
         if (sidebar && (sidebar.classList.contains('mobile-open') || sidebar.classList.contains('open'))) {
@@ -1867,18 +2307,49 @@ function bindHeaderEvents() {
     }
     if (markAllReadBtn) {
         markAllReadBtn.addEventListener('click', () => {
-            state.notifications.forEach(n => n.read = true);
+            state.syntheticNotifications.forEach(n => n.read = true);
             renderNotifications();
             showNotificationToast('All synthetic threat alerts marked as read.');
         });
     }
 
-    // Profile Login Trigger
-    const userTrigger = document.getElementById('user-profile-trigger');
-    if (userTrigger) {
-        userTrigger.addEventListener('click', () => {
+    // User Profile Widget & Menu Dropdown
+    const userWidget = document.getElementById('user-profile-trigger');
+    const userMenu = document.getElementById('user-profile-menu');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginModalOpenBtn = document.getElementById('login-modal-open-btn');
+
+    if (userWidget && userMenu) {
+        userWidget.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userMenu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!userWidget.contains(e.target) && !userMenu.contains(e.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            state.isLoggedIn = false;
+            state.userProfile.name = 'Cmdr. Vance';
+            const userNameEl = document.getElementById('user-display-name');
+            const userRoleEl = document.getElementById('user-display-role');
+            if (userNameEl) userNameEl.textContent = 'Cmdr. Vance';
+            if (userRoleEl) userRoleEl.textContent = 'Lead Analyst \u2022 Demo Session';
+
+            if (userMenu) userMenu.classList.add('hidden');
+            showNotificationToast('Logged out of demo analyst session.');
+        });
+    }
+
+    if (loginModalOpenBtn) {
+        loginModalOpenBtn.addEventListener('click', () => {
             const modal = document.getElementById('login-modal');
             if (modal) modal.classList.remove('hidden');
+            if (userMenu) userMenu.classList.add('hidden');
         });
     }
 }
@@ -1928,17 +2399,38 @@ function toggleMobileSidebar() {
 }
 
 function handleGlobalSearch(query) {
-    if (!query) return;
-    showNotificationToast(`Searching synthetic registry for: "${query}"...`);
-    switchView('cases');
+    if (!query) {
+        showNotificationToast('Please enter a search query.');
+        return;
+    }
+    const sys = countrySystems[state.currentCountry];
+    const qLower = query.trim().toLowerCase();
+    const qNorm = normalizePhoneNumber(query).toLowerCase();
+
+    const match = sys.demoCases.find(c => {
+        const cNorm = normalizePhoneNumber(c.targetIdentifier).toLowerCase();
+        return c.id.toLowerCase() === qLower ||
+               c.targetIdentifier.toLowerCase().includes(qLower) ||
+               (qNorm && cNorm && (cNorm === qNorm || cNorm.includes(qNorm))) ||
+               (c.graphNodes && c.graphNodes.some(n => n.label.toLowerCase().includes(qLower)));
+    });
+
+    if (match) {
+        openCaseDetail(match.id);
+        showNotificationToast(`Opened Case File ${match.id}`);
+    } else {
+        loadScannerSample('phone', query);
+        switchView('scanner');
+        runThreatScanner();
+    }
 }
 
 function renderNotifications() {
     const list = document.getElementById('notification-list-container');
     if (!list) return;
 
-    list.innerHTML = state.notifications.map(n => `
-        <div class="notification-card ${n.read ? '' : 'unread'}">
+    list.innerHTML = state.syntheticNotifications.map(n => `
+        <div class="notification-card ${n.read ? '' : 'unread'}" onclick="${n.caseId ? `openCaseDetail('${n.caseId}'); document.getElementById('notification-drawer').classList.add('hidden');` : ''}" style="cursor:pointer;">
             <i class="fa-solid fa-circle-exclamation ${n.type === 'critical' ? 'text-danger' : 'text-warning'}"></i>
             <div>
                 <p class="text-small font-weight-bold">${n.text}</p>
@@ -1948,7 +2440,7 @@ function renderNotifications() {
     `).join('');
 
     const count = document.getElementById('notification-count');
-    const unread = state.notifications.filter(n => !n.read).length;
+    const unread = state.syntheticNotifications.filter(n => !n.read).length;
     if (count) count.textContent = unread;
 }
 
@@ -1958,8 +2450,6 @@ function bindSidebarEvents() {
             e.preventDefault();
             const viewKey = e.currentTarget.dataset.view;
             switchView(viewKey);
-            
-            // Close mobile sidebar on navigation selection
             closeMobileSidebar();
         });
     });
@@ -1976,7 +2466,6 @@ function switchView(viewKey) {
     if (targetView) targetView.classList.add('active');
     if (targetNav) targetNav.classList.add('active');
 
-    // Trigger re-render if switching to graph view tab
     if (viewKey === 'cases') {
         renderCaseDetail(state.currentCaseId);
     }
@@ -2010,7 +2499,6 @@ function bindCaseTabEvents() {
             const targetPane = document.getElementById(tabKey);
             if (targetPane) targetPane.classList.add('active');
 
-            // Re-render graph if opening tab-graph
             if (tabKey === 'tab-graph') {
                 const sys = countrySystems[state.currentCountry];
                 const caseObj = sys.demoCases.find(c => c.id === state.currentCaseId);
@@ -2138,8 +2626,20 @@ function bindSettingsEvents() {
     const resetBtn = document.getElementById('reset-demo-data-btn');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-            showNotificationToast('Synthetic demo data reset to default state.');
+            state.syntheticReports = [
+                { id: 'RPT-PK-839201', country: 'Pakistan', countryCode: 'PK', category: 'Payment Fraud', target: '+92 300 1112233', date: 'Today 08:30 AM', status: 'DEMO QUEUED', risk: 'HIGH RISK', description: 'Unauthorized transfer requested via mobile app.' },
+                { id: 'RPT-UK-519204', country: 'United Kingdom', countryCode: 'UK', category: 'Phishing', target: 'http://hmrc-tax-rebate-uk.top', date: 'Yesterday', status: 'DEMO QUEUED', risk: 'CRITICAL', description: 'HMRC Tax rebate phishing SMS.' }
+            ];
+            state.syntheticNotifications = [
+                { id: 1, type: 'critical', text: 'New P0 Critical Case TG-PK-20491 initiated in Pakistan Sector.', time: '10m ago', read: false, caseId: 'TG-PK-20491' },
+                { id: 2, type: 'high', text: 'Graph Engine identified 4 linked mule accounts for Case TG-UK-58210.', time: '1h ago', read: false, caseId: 'TG-UK-58210' },
+                { id: 3, type: 'medium', text: 'New phishing portal submitted to scam scanner queue.', time: '2h ago', read: true }
+            ];
+            renderNotifications();
+            renderSubmittedReportsTable();
+            renderDashboardStats();
             switchCountry(state.currentCountry, false);
+            showNotificationToast('Synthetic demo data reset to default state.');
         });
     }
 }
@@ -2164,7 +2664,12 @@ function bindModalEvents() {
             const userNameEl = document.getElementById('user-display-name');
             const userRoleEl = document.getElementById('user-display-role');
             if (userNameEl) userNameEl.textContent = state.userProfile.name;
-            if (userRoleEl) userRoleEl.textContent = 'Lead Threat Analyst \u2022 Authenticated';
+            if (userRoleEl) userRoleEl.textContent = 'Lead Analyst \u2022 Authenticated';
+
+            const udmName = document.getElementById('udm-user-name');
+            const udmStatus = document.getElementById('udm-user-status');
+            if (udmName) udmName.textContent = state.userProfile.name;
+            if (udmStatus) udmStatus.textContent = 'Authenticated Session';
 
             modal.classList.add('hidden');
             showNotificationToast(`Demo Session Authenticated: ${emailVal}`);
@@ -2173,7 +2678,7 @@ function bindModalEvents() {
 }
 
 // --------------------------------------------------------------------------
-// 14. Notification Toast Helper
+// 15. Notification Toast Helper
 // --------------------------------------------------------------------------
 function showNotificationToast(message) {
     let toast = document.getElementById('app-toast-popup');
@@ -2209,4 +2714,3 @@ function showNotificationToast(message) {
         toast.style.transform = 'translateY(10px)';
     }, 3000);
 }
-
