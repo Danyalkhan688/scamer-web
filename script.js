@@ -1224,6 +1224,7 @@ function renderDashboardStats() {
     if (!sys) return;
 
     const stats = calculateDashboardStats(state.currentCountry);
+    const cases = sys.demoCases || [];
 
     const statThreat = document.getElementById('stat-threat-level');
     const statCases = document.getElementById('stat-active-cases');
@@ -1234,6 +1235,16 @@ function renderDashboardStats() {
     if (statCases) statCases.textContent = stats.activeCases + ' Cases';
     if (statEntities) statEntities.textContent = stats.suspiciousEntities + ' Entities';
     if (statReports) statReports.textContent = stats.reportsToday + ' Reports';
+
+    // Dynamic sub-stats
+    const escalatedCount = cases.filter(c => c.status === 'ESCALATED' || c.priority.includes('P0')).length;
+    const casesSub = document.getElementById('stat-cases-sub');
+    if (casesSub) casesSub.textContent = `${escalatedCount} Under Escalation`;
+
+    const phoneNodes = cases.reduce((acc, c) => acc + (c.graphNodes ? c.graphNodes.filter(n => n.type === 'phone').length : 0), 0);
+    const accountNodes = cases.reduce((acc, c) => acc + (c.graphNodes ? c.graphNodes.filter(n => n.type === 'account').length : 0), 0);
+    const entitiesSub = document.getElementById('stat-entities-sub');
+    if (entitiesSub) entitiesSub.textContent = `${accountNodes} Accounts, ${phoneNodes} Phones`;
 
     const sbBadge = document.getElementById('sidebar-cases-badge');
     if (sbBadge) sbBadge.textContent = stats.activeCases;
@@ -1695,7 +1706,7 @@ function renderScannerSamples(sys) {
 
     group.innerHTML = sys.sampleScannerValues.map(s => `
         <button class="btn-sample" onclick="loadScannerSample('${s.type}', '${s.value}')">
-            ${s.label}: ${s.value}
+            ${s.label}
         </button>
     `).join('');
 }
@@ -1771,6 +1782,8 @@ function normalizePhoneNumber(phone) {
     } else if (cleaned.startsWith('04') && state.currentCountry === 'australia') {
         cleaned = '+61' + cleaned.substring(1);
     } else if (cleaned.startsWith('614') && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    } else if (/^1[2-9]\d{9}$/.test(cleaned) && (state.currentCountry === 'usa' || state.currentCountry === 'canada')) {
         cleaned = '+' + cleaned;
     }
     return cleaned;
@@ -2239,6 +2252,14 @@ function bindHeaderEvents() {
 
     if (searchBtn && searchInput) {
         searchBtn.addEventListener('click', () => handleGlobalSearch(searchInput.value));
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleGlobalSearch(searchInput.value);
+                const dd = document.getElementById('search-results-dropdown');
+                if (dd) dd.classList.add('hidden');
+            }
+        });
     }
 
     if (searchInput && searchDropdown) {
@@ -2583,7 +2604,7 @@ THREAT METRICS:
 - Threat Level:      ${caseObj.threatLevel}
 - Priority:          ${caseObj.priority}
 - Likely Threat Type: ${caseObj.threatType}
-- AI Confidence:     ${caseObj.confidence}
+- Synthetic Risk Confidence: ${caseObj.confidence}
 - Evidence Strength: ${caseObj.evidenceStrength}
 - Pattern Match:     ${caseObj.patternMatch}
 - Anomaly Level:     ${caseObj.anomalyLevel}
@@ -2700,6 +2721,7 @@ function bindModalEvents() {
 // --------------------------------------------------------------------------
 // 15. Notification Toast Helper
 // --------------------------------------------------------------------------
+let _toastTimerId = null;
 function showNotificationToast(message) {
     let toast = document.getElementById('app-toast-popup');
     if (!toast) {
@@ -2720,17 +2742,21 @@ function showNotificationToast(message) {
             display: flex;
             align-items: center;
             gap: 10px;
+            max-width: calc(100vw - 48px);
             transition: all 0.3s ease;
         `;
         document.body.appendChild(toast);
     }
 
+    if (_toastTimerId) clearTimeout(_toastTimerId);
+
     toast.innerHTML = `<i class="fa-solid fa-circle-info text-cyan"></i> <span>${message}</span>`;
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
 
-    setTimeout(() => {
+    _toastTimerId = setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(10px)';
+        _toastTimerId = null;
     }, 3000);
 }

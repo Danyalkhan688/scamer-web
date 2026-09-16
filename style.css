@@ -141,9 +141,63 @@ button {
 .text-success { color: var(--threat-low) !important; }
 .text-muted { color: var(--text-muted) !important; }
 .text-small { font-size: 12px; }
+.text-center { text-align: center; }
+.text-primary { color: var(--text-primary) !important; }
+.font-mono { font-family: var(--font-mono); }
+.font-weight-bold { font-weight: 700; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 .no-padding { padding: 0 !important; }
 .overflow-x { overflow-x: auto; }
+
+/* Spacing Utilities */
+.margin-top-xs { margin-top: 4px; }
+.margin-top-sm { margin-top: 8px; }
+.margin-top-md { margin-top: 16px; }
+.margin-top-lg { margin-top: 24px; }
+.margin-bottom-xs { margin-bottom: 4px; }
+.margin-bottom-sm { margin-bottom: 8px; }
+.margin-bottom-md { margin-bottom: 16px; }
+.margin-bottom-lg { margin-bottom: 24px; }
+.margin-auto { margin-left: auto; margin-right: auto; }
+.max-width-800 { max-width: 800px; }
+.max-width-900 { max-width: 900px; }
+
+/* Small Icon Button */
+.icon-btn-small {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.icon-btn-small:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    background: rgba(0, 242, 254, 0.08);
+}
+
+/* Text Action Button */
+.text-btn {
+    background: none;
+    border: none;
+    color: var(--accent-cyan);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.text-btn:hover {
+    color: var(--text-primary);
+}
 
 /* --------------------------------------------------------------------------
    3. Main App Layout & Header
@@ -731,6 +785,34 @@ body.glow-low::before { opacity: 0.15; }
 
 .card-body {
     padding: 20px;
+}
+
+.card-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Page Title Banners (Scanner, Message, URL sections) */
+.page-title-banner {
+    margin-bottom: 0;
+}
+
+.ptb-content {
+    padding: 20px 24px;
+}
+
+.ptb-content h2 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.ptb-content p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
 .dashboard-grid {
@@ -1614,6 +1696,248 @@ mark.marker-impersonation { background: rgba(255, 183, 0, 0.25); color: #ffca28;
 }
 
 /* --------------------------------------------------------------------------
+   Settings Page Styles
+   -------------------------------------------------------------------------- */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color);
+    gap: 16px;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.si-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.si-info strong {
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.si-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.si-control {
+    flex-shrink: 0;
+}
+
+/* Toggle Switch Component */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    transition: var(--transition-fast);
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--text-secondary);
+    border-radius: 50%;
+    transition: var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(0, 242, 254, 0.2);
+    border-color: var(--accent-cyan);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    background-color: var(--accent-cyan);
+    transform: translateX(20px);
+}
+
+/* --------------------------------------------------------------------------
+   About Page Styles
+   -------------------------------------------------------------------------- */
+.about-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.about-hero {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.about-hero h2 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.lead-text {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    line-height: 1.7;
+}
+
+.about-section {
+    padding: 16px 0;
+}
+
+.about-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.about-section p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.about-section ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-section ul li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.about-section ul li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+    font-weight: 700;
+}
+
+.highlight-box {
+    background: rgba(255, 183, 0, 0.06);
+    border: 1px solid rgba(255, 183, 0, 0.25);
+    border-radius: var(--radius-md);
+    padding: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Form Grid & Form Group Styles
+   -------------------------------------------------------------------------- */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Success Banner
+   -------------------------------------------------------------------------- */
+.success-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.success-icon {
+    font-size: 22px;
+    color: var(--threat-low);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.sb-content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--threat-low);
+    margin-bottom: 4px;
+}
+
+.sb-content p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Timeline Extra Dot Colors
+   -------------------------------------------------------------------------- */
+.timeline-item.warn .timeline-dot {
+    border-color: var(--threat-suspicious);
+    background: rgba(255, 183, 0, 0.3);
+}
+
+.timeline-item.info .timeline-dot {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 242, 254, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Fingerprint Full Card Display
+   -------------------------------------------------------------------------- */
+.fingerprint-full-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* --------------------------------------------------------------------------
    11. Responsive Media Queries
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
@@ -1622,6 +1946,9 @@ mark.marker-impersonation { background: rgba(255, 183, 0, 0.25); color: #ffca28;
     .header-center { max-width: 280px; }
     .case-detail-header { flex-direction: column; align-items: flex-start; gap: 14px; }
     .cdh-right { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
+    .dashboard-header-banner { flex-direction: column; gap: 14px; align-items: flex-start; }
+    .dhb-actions { width: 100%; }
+    .dhb-title-group { flex-wrap: wrap; }
 }
 
 @media (max-width: 768px) {
@@ -1712,6 +2039,49 @@ mark.marker-impersonation { background: rgba(255, 183, 0, 0.25); color: #ffca28;
         font-size: 12px;
         white-space: nowrap;
     }
+
+    .quick-samples-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .sample-buttons-group {
+        flex-wrap: wrap;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.grid-col-6,
+    .form-group.grid-col-12 {
+        grid-column: span 1 !important;
+    }
+
+    .page-title-banner .ptb-content h2 {
+        font-size: 16px;
+        word-break: break-word;
+    }
+
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .cdh-id-row {
+        flex-wrap: wrap;
+    }
+
+    .cdh-meta-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .multidim-scores {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
@@ -1732,6 +2102,19 @@ mark.marker-impersonation { background: rgba(255, 183, 0, 0.25); color: #ffca28;
     .modal-card {
         width: calc(100% - 24px);
         margin: 12px;
+    }
+
+    .dhb-title-group h2 {
+        font-size: 16px;
+    }
+
+    .multidim-scores {
+        grid-template-columns: 1fr;
+    }
+
+    .radar-container {
+        width: 200px;
+        height: 200px;
     }
 }
 
